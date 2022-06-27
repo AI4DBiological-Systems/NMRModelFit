@@ -230,24 +230,4 @@ y = y ./ Z
 # include("inner_kappa.jl") # debug inner optim.
 #@assert 1==3
 
-include("fit_regions.jl")
-
-
-using Plots; plotly()
-
-
-
-# julia> minxs
-# 3-element Vector{Vector{Float64}}:
-#  [-0.3182551682670491, 0.049183131629439616, 0.024203062792075736]
-#  [0.9948724914072531, 0.06932430981123272, 0.0839330953494708]
-#  [0.060496655154809946, 0.10515911754875247, 0.11996321361619477]
-#
-# julia> w_BLS
-# ERROR: UndefVarError: w_BLS not defined
-#
-# julia> ws
-# 3-element Vector{Vector{Float64}}:
-#  [75.8591754032393, 0.21482769137077787]
-#  [47.263485918404186, 0.33989540682369757]
-#  [0.26376149754144756, 0.34040957238909]
+#include("fit_regions.jl")

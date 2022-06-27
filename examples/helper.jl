@@ -8,7 +8,7 @@ function saveregionresults(minfs, minxs, rets, ws,
         BSON.bson(save_path, region_min_dist = region_min_dist,
         minf = minfs[r],
         minx = minxs[r],
-        rets = rets[r],
+        ret = rets[r],
         w = ws[r],
         κs_βs = collect( Bs[n].ss_params.κs_β for n = 1:length(Bs)),
         ds = collect( Bs[n].ss_params.d for n = 1:length(Bs)),
@@ -101,8 +101,8 @@ function plotquantificationresults(As, Bs, ws, save_folder,
         #ws[r][1] = 0.0
         q_U = q2.(U_rad)
 
-        file_name = "quantify_real_$(r).html"
-        title_string = "$(project_name) quantify results, region $(r), real part, cost = $(cost)"
+        file_name = "real_$(r).html"
+        title_string = "$(project_name) fit results, region $(r), real part, cost = $(cost)"
 
         plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor, display_reduction_factor,
             save_folder, title_string, file_name;
