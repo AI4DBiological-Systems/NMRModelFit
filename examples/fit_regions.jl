@@ -16,6 +16,12 @@ save_plot_flag = true
 # save_BSON_flag = false
 # save_plot_flag = false
 
+
+Δsys_cs_used = deepcopy(Δsys_cs)
+if typeof(dummy_SSFID) <: NMRSignalSimulator.SpinSysParamsType2
+    Δsys_cs_used = Δsys_cs .* 0.1
+end
+
 N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
 N_β = sum( NMRModelFit.getNβ(Bs[n]) for n = 1:length(Bs) )
 
@@ -37,7 +43,7 @@ println("Timing:")
     Bs,
     fs,
     SW,
-    Δsys_cs,
+    Δsys_cs_used,
     a_setp, b_setp,
     shift_lb,
     shift_ub,

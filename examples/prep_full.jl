@@ -27,6 +27,10 @@ Random.seed!(25)
 # TODO phenylalanine and another serine 700 MHz with normal serine entry.
 
 ##### global constants.
+
+#
+
+
 SH_config_path = "/home/roy/Documents/repo/NMRData/input/SH_configs/select_compounds_SH_configs_reduce.json"
 #SH_config_path = "/home/roy/Documents/repo/NMRData/input/SH_configs/select_compounds_SH_configs_low_intensity_threshold.json"
 
@@ -44,15 +48,27 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 
 
 ###
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
+# project_name = "Serine-BMRB-700-20mM-mod"
+# molecule_names = ["L-Serine - mod";]
+# dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
+
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
+# project_name = "Serine-BMRB-700-20mM"
+# molecule_names = ["L-Serine";]
+# dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
+
 experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-project_name = "Serine-BMRB-700-20mM-mod"
-molecule_names = ["L-Serine - mod";]
+project_name = "Serine-BMRB-700-20mM-fine"
+molecule_names = ["L-Serine";]
+dummy_SSFID = NMRSignalSimulator.SpinSysParamsType2(0.0)
+
+# TODO: disable warp and Δsys_cs_used multiplier, and use hard bounds.
 
 
 # specify the NMR experiment folder
 #experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000297_ethanol/"
 #experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/glucose/Sep-25-2018"
-
 #experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-0.5mM/L-Serine"
 #experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/NRC_4_amino_acid_mixture_Jan_2022/1"
 #experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Isoleucine"
@@ -130,8 +146,6 @@ offset_ppm = 0.3
 
 Δcs_max_scalar_default = 0.2 # In units of ppm. interpolation border that is added to the lowest and highest resonance frequency component of the mixture being simulated.
 
-dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0) # level 2 model.
-
 unique_cs_atol = 1e-6 # for assessing chemical equivalence.
 prune_combo_Δc_bar_flag = true
 
@@ -195,7 +209,6 @@ u_max = ppm2hzfunc(ΩS_ppm_sorted[end] + u_offset)
 
 
 println("Timing: fitproxies!()")
-dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
 Bs = NMRSignalSimulator.fitproxies(As, dummy_SSFID, λ0;
     names = molecule_names,
     config_path = surrogate_config_path,
@@ -230,4 +243,4 @@ y = y ./ Z
 # include("inner_kappa.jl") # debug inner optim.
 #@assert 1==3
 
-#include("fit_regions.jl")
+include("fit_regions.jl")

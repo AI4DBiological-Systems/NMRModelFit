@@ -88,7 +88,7 @@ display_threshold_factor = 0.001/10
 plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor, display_reduction_factor,
     save_folder, title_string, file_name;
     save_plot_flag = false,
-    display_plot_flag = true,
+    display_plot_flag = false,
     canvas_size = (1000, 400))
 
 # check by plotting to see if we get the same plot back, and cost.
@@ -98,3 +98,17 @@ function convertΔω0toΔcs(y::T, fs::T, SW::T)::T where T
 end
 
 d_cs = convertΔω0toΔcs.(Bs[1].ss_params.d, fs, SW)
+
+
+T = Float64
+x0 = 0.4
+target = NMRModelFit.convertcompactdomain(x0, -one(T), one(T), zero(T), one(T))
+a = a_setp(target)
+b = b_setp(target)
+
+warpfunc = tt->MonotoneMaps.evalcompositelogisticprobit(tt, a, b, -one(T), one(T))
+
+t = LinRange(-1,1, 500)
+y_t = warpfunc.(t)
+
+PyPlot.plot(t, y_t)

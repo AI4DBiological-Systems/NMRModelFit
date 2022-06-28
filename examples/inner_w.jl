@@ -80,8 +80,8 @@ obj_func = pp->NMRModelFit.costnesteddw(U_rad_cost, y_cost, updatedfunc,
 updatewfunc, pp,  Bs, run_optim,
 E_BLS, w_BLS, b_BLS, p_β)
 
-#p = zeros(N_d)
-p = [0.02;] # Serine 700 MHz BMRB.
+p = ones(N_d) .* 0.02
+#p = [0.02;] # Serine 700 MHz BMRB.
 #p = [0.13513301735885624;]
 updatedfunc(p)
 

@@ -19,10 +19,11 @@ function setupcostnesteddwarpw(Bs,
     ##### update functions.
     N_β = sum( getNβ(Bs[n]) for n = 1:length(Bs) )
     N_d = sum( getNd(Bs[n]) for n = 1:length(Bs) )
+    p_buffer = zeros(T, N_d)
 
     st_ind_d = 1
     fin_ind_d = st_ind_d + N_d - 1
-    updatedfunc = pp->updatemixturedwarp!(Bs, pp, st_ind_d, fs, SW,
+    updatedfunc = pp->updatemixturedwarp!(p_buffer, Bs, As, pp, st_ind_d, fs, SW,
         Δsys_cs, a_setp, b_setp)
 
     N_vars_set = [N_d; ]

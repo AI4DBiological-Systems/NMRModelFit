@@ -28,5 +28,6 @@ include("../src/front_end/coarse.jl")
 include("../src/cost/prep.jl")
 include("../src/cost/LSw.jl")
 include("../src/cost/coarse_fit.jl")
+include("../src/cost/fine_fit.jl")
 
 end

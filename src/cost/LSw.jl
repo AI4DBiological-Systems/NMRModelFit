@@ -57,7 +57,7 @@ function forcesymmetric(A::Matrix{T})::Matrix{T} where T <: Real
 end
 
 function evaldesignmatrixw2!(F::Matrix{Complex{T}},
-    U_rad, Bs, As) where T <: Real
+    U_rad, Bs::Vector{CompoundType{T, SpinSysParamsType1{T}}}, As) where T <: Real
 
     M = length(U_rad)
     N = length(Bs)
@@ -77,6 +77,45 @@ function evaldesignmatrixw2!(F::Matrix{Complex{T}},
             for i in eachindex(B.qs)
                 for k in eachindex(B.qs[i])
                     s += B.qs[i][k](U_rad[m] - B.ss_params.d[i], B.ss_params.κs_λ[i])
+                end
+            end
+            F[m,n] = s
+
+            # singlets.
+            for k = 1:length(B.κs_λ_singlets)
+
+                F[m,n] += NMRSpectraSimulator.evalsinglets(U_rad[m], B.d_singlets,
+                A.αs_singlets, A.Ωs_singlets,
+                B.β_singlets, B.λ0, B.κs_λ_singlets, B.κs_α_singlets)
+            end
+
+        end
+    end
+
+    return nothing
+end
+
+function evaldesignmatrixw2!(F::Matrix{Complex{T}},
+    U_rad, Bs::Vector{CompoundType{T, SpinSysParamsType2{T}}}, As) where T <: Real
+
+    M = length(U_rad)
+    N = length(Bs)
+
+    @assert size(F) == (M,N)
+
+    fill!(F, NaN) # debug.
+
+    for n = 1:N
+        B = Bs[n]
+        A = As[n]
+
+        for m = 1:M
+
+            # non-singlet spin systems.
+            s = zero(Complex{T})
+            for i in eachindex(B.qs)
+                for k in eachindex(B.qs[i])
+                    s += B.qs[i][k](U_rad[m] - B.ss_params.d[i][k], B.ss_params.κs_λ[i])
                 end
             end
             F[m,n] = s

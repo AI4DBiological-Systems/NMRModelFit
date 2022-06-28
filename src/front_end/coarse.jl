@@ -168,7 +168,9 @@ end
 
 
 # assume shifts always between [-1,1]
-function updatemixturedwarp!(Bs::Vector{CompoundType{T,SST}},
+function updatemixturedwarp!(p_buffer::Vector{T},
+    Bs::Vector{CompoundType{T,SST}},
+    As,
     p::Vector{T},
     st_ind::Int,
     fs::T,
@@ -177,8 +179,8 @@ function updatemixturedwarp!(Bs::Vector{CompoundType{T,SST}},
     itp_a,
     itp_b)::Int where {T <: Real, SST}
 
-    j1 = applywarptoshifts!(p, Bs, p, st_ind, itp_a, itp_b)
-    j = updatemixtured!(Bs, p, st_ind, fs, SW, Δsys_cs)
+    j1 = applywarptoshifts!(p_buffer, Bs, p, st_ind, itp_a, itp_b)
+    j = updatemixtured!(Bs, p_buffer, As, st_ind, fs, SW, Δsys_cs)
 
     @assert j1 == j # debug.
 
@@ -186,7 +188,7 @@ function updatemixturedwarp!(Bs::Vector{CompoundType{T,SST}},
 end
 
 function applywarptoshifts!(x::Vector{T},
-    Bs,
+    Bs::Vector{CompoundType{T, SpinSysParamsType1{T}}},
     p::Vector{T},
     st_ind::Int,
     itp_a,
@@ -222,8 +224,9 @@ function applywarptoshifts!(x::Vector{T},
     return j
 end
 
-function updatemixtured!(As::Vector{CompoundType{T,SpinSysParamsType1{T}}},
+function updatemixtured!(Bs::Vector{CompoundType{T,SpinSysParamsType1{T}}},
     p::Vector{T},
+    As,
     st_ind::Int,
     fs::T,
     SW::T,
@@ -233,24 +236,24 @@ function updatemixtured!(As::Vector{CompoundType{T,SpinSysParamsType1{T}}},
 
     j = st_ind - 1
 
-    for n = 1:length(As)
+    for n = 1:length(Bs)
 
-        N_spins_sys = length(As[n].ss_params.d)
-        @assert length(Δsys_cs[n]) == N_spins_sys + length(As[n].d_singlets)
+        N_spins_sys = length(Bs[n].ss_params.d)
+        @assert length(Δsys_cs[n]) == N_spins_sys + length(Bs[n].d_singlets)
 
         for i = 1:N_spins_sys
             j += 1
 
             #p2 = p[j]*0.05 #*Δ_shifts[j]
             p2 = p[j]*Δsys_cs[n][i]
-            As[n].ss_params.d[i] = convertΔcstoΔω0(p2, fs, SW)
+            Bs[n].ss_params.d[i] = convertΔcstoΔω0(p2, fs, SW)
         end
 
-        for i = 1:length(As[n].d_singlets)
+        for i = 1:length(Bs[n].d_singlets)
             j += 1
 
             p2 = p[j]*Δsys_cs[n][i+N_spins_sys]
-            As[n].d_singlets[i] = convertΔcstoΔω0(p2, fs, SW)
+            Bs[n].d_singlets[i] = convertΔcstoΔω0(p2, fs, SW)
         end
     end
 
