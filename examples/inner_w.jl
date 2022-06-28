@@ -41,8 +41,13 @@ w_ub_default = 100.0
 N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
 #N_β = sum( NMRModelFit.getNβ(κs_β_DOFs[n], Bs[n]) for n = 1:length(Bs) )
 
-shift_lb = -ones(N_d)
-shift_ub = ones(N_d)
+# for fine.
+shift_lb = -ones(N_d) .* 0.02
+shift_ub = ones(N_d) .* 0.02
+
+# # for corase.
+# shift_lb = -ones(N_d)
+# shift_ub = ones(N_d)
 
 a_setp, b_setp, minxs,
     rets = NMRModelFit.setupitpab(0.1, 10, 0.7; optim_algorithm = :LN_BOBYQA)
@@ -80,7 +85,8 @@ obj_func = pp->NMRModelFit.costnesteddw(U_rad_cost, y_cost, updatedfunc,
 updatewfunc, pp,  Bs, run_optim,
 E_BLS, w_BLS, b_BLS, p_β)
 
-p = ones(N_d) .* 0.02
+#p = ones(N_d) .* 0.02
+p = [-0.0190625; -0.0040625; 0.012812500000000001]
 #p = [0.02;] # Serine 700 MHz BMRB.
 #p = [0.13513301735885624;]
 updatedfunc(p)

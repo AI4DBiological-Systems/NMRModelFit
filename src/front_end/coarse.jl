@@ -182,7 +182,7 @@ function updatemixturedwarp!(p_buffer::Vector{T},
     j1 = applywarptoshifts!(p_buffer, Bs, p, st_ind, itp_a, itp_b)
     j = updatemixtured!(Bs, p_buffer, As, st_ind, fs, SW, Δsys_cs)
 
-    @assert j1 == j # debug.
+    #@assert j1 == j # debug.
 
     return j
 end

@@ -53,15 +53,15 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # molecule_names = ["L-Serine - mod";]
 # dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
 
-# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-# project_name = "Serine-BMRB-700-20mM"
-# molecule_names = ["L-Serine";]
-# dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
-
 experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-project_name = "Serine-BMRB-700-20mM-fine"
+project_name = "Serine-BMRB-700-20mM"
 molecule_names = ["L-Serine";]
-dummy_SSFID = NMRSignalSimulator.SpinSysParamsType2(0.0)
+dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
+
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
+# project_name = "Serine-BMRB-700-20mM-fine"
+# molecule_names = ["L-Serine";]
+# dummy_SSFID = NMRSignalSimulator.SpinSysParamsType2(0.0)
 
 # TODO: disable warp and Δsys_cs_used multiplier, and use hard bounds.
 
@@ -243,4 +243,4 @@ y = y ./ Z
 # include("inner_kappa.jl") # debug inner optim.
 #@assert 1==3
 
-include("fit_regions.jl")
+#include("fit_regions.jl")

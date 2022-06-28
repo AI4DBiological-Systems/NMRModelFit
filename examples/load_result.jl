@@ -24,8 +24,10 @@ Random.seed!(25)
 
 include("helper.jl")
 
+# run prep_full.jl first.
 
-project_folder = "/home/roy/MEGAsync/outputs/NMR/align/Serine-BMRB-700-20mM-mod"
+#project_folder = "/home/roy/MEGAsync/outputs/NMR/align/Serine-BMRB-700-20mM-mod"
+
 r = 1
 
 function loadregion!(Bs, project_folder::String)
@@ -58,6 +60,8 @@ function loadregion!(Bs, project_folder::String)
 end
 
 minf, minx, rets, w = loadregion!(Bs, project_folder)
+κs_β = Bs[1].ss_params.κs_β
+d = Bs[1].ss_params.d
 
 y_cost = y[cost_inds_set[r]]
 P_cost = P_y[cost_inds_set[r]]
@@ -69,7 +73,7 @@ U_cost_rad = U_cost .* (2*π)
 cost = sum( abs2.(q2.(U_cost_rad) - y_cost) ) # 1.6576135224225783 for serine-mod.
 
 
-
+@assert 1==2
 
 U = LinRange(u_min, u_max, 50000)
 P = hz2ppmfunc.(U)

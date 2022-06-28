@@ -40,6 +40,7 @@ function applywarptoshifts!(x::Vector{T},
     return j
 end
 
+# p is in units of chem shift.
 function updatemixtured!(Bs::Vector{CompoundType{T,SpinSysParamsType2{T}}},
     p::Vector{T}, # unused.
     As,
@@ -47,8 +48,6 @@ function updatemixtured!(Bs::Vector{CompoundType{T,SpinSysParamsType2{T}}},
     fs::T,
     SW::T,
     Δsys_cs::Vector{Vector{T}})::Int where T <: Real
-
-    #@assert length(warp_param_set) == length(Δ_shifts)
 
     j = st_ind - 1
 
@@ -59,19 +58,24 @@ function updatemixtured!(Bs::Vector{CompoundType{T,SpinSysParamsType2{T}}},
 
         for i = 1:N_spins_sys
 
-            for k = 1:length(Bs[n].ss_params.d)
+            for k = 1:length(Bs[n].ss_params.d[i])
 
+                # println("As[n].Δc_bar[$(i)][$(k)] = ", As[n].Δc_bar[i][k])
 
-                p2 = dot(Bs[n].ss_params.κs_β[i], As[n].Δc_bar[i][k])*Δsys_cs[n][i]
+                p2 = dot(Bs[n].ss_params.κs_d[i], As[n].Δc_bar[i][k])#*Δsys_cs[n][i]
                 Bs[n].ss_params.d[i][k] = convertΔcstoΔω0(p2, fs, SW)
             end
-            j += length(Bs[n].ss_params.κs_β[i])
+            j += length(Bs[n].ss_params.κs_d[i])
+
+            # println("Bs[n].ss_params.κs_d[$(i)] = ", Bs[n].ss_params.κs_d[i])
+            # println()
+
         end
 
         for i = 1:length(Bs[n].d_singlets)
             j += 1
 
-            p2 = Bs[n].d_singlets[i]*Δsys_cs[n][i+N_spins_sys]
+            p2 = Bs[n].d_singlets[i]#*Δsys_cs[n][i+N_spins_sys]
             Bs[n].d_singlets[i] = convertΔcstoΔω0(p2, fs, SW)
         end
     end

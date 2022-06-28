@@ -1,4 +1,6 @@
-# packaged version of align.jl. Run align_prep.jl or prep_full.jl first.
+# fit a single region at a time.
+# loads the result of coarse fit, which is fit_regions.jl.
+# redo later.
 
 include("../src/NMRModelFit.jl")
 import .NMRModelFit
@@ -11,16 +13,16 @@ using Plots; plotly()
 include("helper.jl")
 
 
-# save_BSON_flag = true
-# save_plot_flag = true
-save_BSON_flag = false
-save_plot_flag = false
+save_BSON_flag = true
+save_plot_flag = true
+# save_BSON_flag = false
+# save_plot_flag = false
 
 N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
 N_β = sum( NMRModelFit.getNβ(Bs[n]) for n = 1:length(Bs) )
 
-shift_lb = -ones(N_d)
-shift_ub = ones(N_d)
+shift_lb = -ones(N_d) .* 0.02
+shift_ub = ones(N_d) .* 0.02
 
 a_setp, b_setp, minxs,
     rets = NMRModelFit.setupitpab(0.1, 10, 0.7; optim_algorithm = :LN_BOBYQA)
