@@ -24,11 +24,10 @@ Random.seed!(25)
 
 include("helper.jl")
 
-# run prep_full.jl first.
-
-#project_folder = "/home/roy/MEGAsync/outputs/NMR/align/Serine-BMRB-700-20mM-mod"
+# run prep_full.jl first. Refines a region given the coarse fit.
 
 r = 1
+
 
 
 minf, minx, rets, w = loadregion!(Bs, project_folder)
@@ -41,13 +40,51 @@ y_cost = y[cost_inds_set[r]]
 P_cost = P_y[cost_inds_set[r]]
 U_cost = U_y[cost_inds_set[r]]
 
+# NMRModelFit.alignquantificationregion(y_cost,
+#     U_cost,
+#     P_cost,
+#     As,
+#     Bs,
+#     fs,
+#     SW,
+#     Δsys_cs,
+#     a_setp, b_setp,
+#     shift_lb,
+#     shift_ub,
+#     Δcs_offset;
+#     N_starts = N_starts,
+#     local_optim_algorithm = NLopt.LN_BOBYQA,
+#     xtol_rel = 1e-9,
+#     maxeval = 50, # 2, # 50,
+#     maxtime = Inf,
+#     β_optim_algorithm = :GN_DIRECT_L,
+#     w_lb_default = 1e-1,
+#     w_ub_default = 100.0,
+#     β_max_iters = 500, # 2, # 500,
+#     β_xtol_rel = 1e-9,
+#     β_ftol_rel = 1e-9,
+#     β_maxtime = Inf)
+
+
 q2 = uu->NMRSignalSimulator.evalclproxymixture(uu, As, Bs; w = w)
 
 U_cost_rad = U_cost .* (2*π)
 cost = sum( abs2.(q2.(U_cost_rad) - y_cost) ) # 1.6576135224225783 for serine-mod.
 
+a_setp, b_setp, minxs,
+    rets = NMRModelFit.setupitpab(0.1, 10, 0.7; optim_algorithm = :LN_BOBYQA)
+
+Δcs_offset = zeros(N_d)
+
+p_test = ones(N_d) .* Inf
+x1 = ones(N_d) .* Inf
+NMRModelFit.extractmixturedwarp!(x1, Bs, As, p_test, 1, fs, SW, Δsys_cs, Δcs_offset, a_setp, b_setp)
 
 
+extracted_Δcs = ones(N_d) .* Inf
+NMRModelFit.extractmixtured!(extracted_Δcs, Bs, As, 1, fs, SW)
+
+# TODO I am here.
 
 @assert 1==2
 

@@ -25,6 +25,8 @@ end
 N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
 N_β = sum( NMRModelFit.getNβ(Bs[n]) for n = 1:length(Bs) )
 
+Δcs_offset = zeros(N_d)
+
 shift_lb = -ones(N_d)
 shift_ub = ones(N_d)
 
@@ -47,7 +49,8 @@ println("Timing:")
     a_setp, b_setp,
     shift_lb,
     shift_ub,
-    cost_inds_set;
+    cost_inds_set,
+    Δcs_offset;
     loop_range = loop_range,
     N_starts = 100,
     local_optim_algorithm = NLopt.LN_BOBYQA,

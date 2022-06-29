@@ -21,6 +21,12 @@ function getNβ(A::CompoundType{T,SST}) where {T,SST}
     return counter_sys + length(A.β_singlets)
 end
 
+"""
+convertcompactdomain(x::T, a::T, b::T, c::T, d::T)::T where T <: Real
+returns (x-a)*(d-c)/(b-a)+c
+
+converts x ∈ [a,b] to y ∈ [c,d].
+"""
 function convertcompactdomain(x::T, a::T, b::T, c::T, d::T)::T where T <: Real
 
     return (x-a)*(d-c)/(b-a)+c

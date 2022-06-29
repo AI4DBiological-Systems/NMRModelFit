@@ -23,11 +23,12 @@ import MonotoneMaps # https://github.com/RoyCCWang/MonotoneMaps.jl
 include("../src/types.jl")
 include("../src/utils.jl")
 
-include("../src/front_end/coarse.jl")
+include("../src/front_end/region.jl")
 
 include("../src/cost/prep.jl")
 include("../src/cost/LSw.jl")
-include("../src/cost/coarse_fit.jl")
-include("../src/cost/fine_fit.jl")
+include("../src/cost/phase_fit.jl")
+include("../src/cost/shift_fit.jl")
+include("../src/cost/shift_extract.jl")
 
 end

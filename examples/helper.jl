@@ -1,3 +1,34 @@
+
+function loadregion!(Bs::Vector{NMRModelFit.CompoundType{T, NMRModelFit.SpinSysParamsType1{T}}},
+    project_folder::String) where T
+
+    load_path = joinpath(project_folder, "region_$(r).bson")
+    dic = BSON.load(load_path)
+    minf = dic[:minf]
+    minx = dic[:minx]
+    ret = dic[:ret]
+    w = dic[:w]
+
+    for n = 1:length(Bs)
+
+        if !isempty(dic[:κs_βs])
+
+            tmp = convert(Vector{Vector{Float64}}, dic[:κs_βs][n])
+            for i = 1:length(Bs[n].ss_params.κs_β)
+                Bs[n].ss_params.κs_β[i][:] = tmp[i][:]
+            end
+            Bs[n].ss_params.d[:] = convert(Vector{Float64}, dic[:ds][n])
+
+            if !isempty(Bs[n].β_singlets)
+                Bs[n].β_singlets[:] = convert(Vector{Float64}, dic[:β_singletss][n])
+                Bs[n].d_singlets[:] = convert(Vector{Float64}, dic[:d_singletss][n])
+            end
+        end
+    end
+
+    return minf, minx, rets, w
+end
+
 function saveregionresults(minfs, minxs, rets, ws,
     As, Bs, obj_funcs, project_folder::String)
 

@@ -2,7 +2,8 @@ function fitregions(y::Vector{Complex{T}}, U_y, P_y, As, Bs, fs, SW,
     Δsys_cs, a_setp, b_setp,
     shift_lb::Vector{T},
     shift_ub::Vector{T},
-    cost_inds_set::Vector{Vector{Int}};
+    cost_inds_set::Vector{Vector{Int}},
+    Δcs_offset::Vector{T};
     loop_range = 1:length(cost_inds_set),
     N_starts = 100,
     local_optim_algorithm = NLopt.LN_BOBYQA,
@@ -37,7 +38,8 @@ function fitregions(y::Vector{Complex{T}}, U_y, P_y, As, Bs, fs, SW,
             Δsys_cs,
             a_setp, b_setp,
             shift_lb,
-            shift_ub;
+            shift_ub,
+            Δcs_offset;
             N_starts = N_starts,
             local_optim_algorithm = local_optim_algorithm,
             xtol_rel = xtol_rel,
@@ -65,7 +67,8 @@ function alignquantificationregion(y_cost::Vector{Complex{T}},
     Δsys_cs,
     a_setp, b_setp,
     shift_lb::Vector{T},
-    shift_ub::Vector{T};
+    shift_ub::Vector{T},
+    Δcs_offset::Vector{T};
     LS_inds = 1:length(U_cost),
     N_starts = 100,
     local_optim_algorithm = NLopt.LN_BOBYQA,
@@ -90,7 +93,7 @@ function alignquantificationregion(y_cost::Vector{Complex{T}},
     q, updatedfunc, getshiftfunc, N_vars_set,
     run_optim, obj_func_β, E_BLS, w_BLS, b_BLS, updateβfunc, updatewfunc,
     q_β = setupcostnesteddwarpw(Bs, As, fs, SW, LS_inds, U_rad_cost,
-        y_cost, Δsys_cs, a_setp, b_setp;
+        y_cost, Δsys_cs, Δcs_offset, a_setp, b_setp;
         β_optim_algorithm = β_optim_algorithm,
         w_lb_default = w_lb_default,
         w_ub_default = w_ub_default,
@@ -163,103 +166,4 @@ function costnesteddw(U,
     cost = norm(reinterpret(T, E_BLS)*w_BLS - b_BLS)^2
 
     return cost
-end
-
-
-
-# assume shifts always between [-1,1]
-function updatemixturedwarp!(p_buffer::Vector{T},
-    Bs::Vector{CompoundType{T,SST}},
-    As,
-    p::Vector{T},
-    st_ind::Int,
-    fs::T,
-    SW::T,
-    Δsys_cs::Vector{Vector{T}},
-    itp_a,
-    itp_b)::Int where {T <: Real, SST}
-
-    j1 = applywarptoshifts!(p_buffer, Bs, p, st_ind, itp_a, itp_b)
-    j = updatemixtured!(Bs, p_buffer, As, st_ind, fs, SW, Δsys_cs)
-
-    #@assert j1 == j # debug.
-
-    return j
-end
-
-function applywarptoshifts!(x::Vector{T},
-    Bs::Vector{CompoundType{T, SpinSysParamsType1{T}}},
-    p::Vector{T},
-    st_ind::Int,
-    itp_a,
-    itp_b) where T <: Real
-
-    j = st_ind - 1
-
-    for n = 1:length(Bs)
-
-        # first.
-        i = 1
-        j += 1
-        x[j] = p[j]
-
-        # itp.
-        target = convertcompactdomain(p[j], -one(T), one(T), zero(T), one(T))
-        a = itp_a(target)
-        b = itp_b(target)
-
-        for i = 2:length(Bs[n].ss_params.d)
-            j += 1
-
-            x[j] = MonotoneMaps.evalcompositelogisticprobit(p[j], a, b, -one(T), one(T))
-        end
-
-        for i = 1:length(Bs[n].d_singlets)
-            j += 1
-
-            x[j] = p[j]
-        end
-    end
-
-    return j
-end
-
-function updatemixtured!(Bs::Vector{CompoundType{T,SpinSysParamsType1{T}}},
-    p::Vector{T},
-    As,
-    st_ind::Int,
-    fs::T,
-    SW::T,
-    Δsys_cs::Vector{Vector{T}})::Int where T <: Real
-
-    #@assert length(warp_param_set) == length(Δ_shifts)
-
-    j = st_ind - 1
-
-    for n = 1:length(Bs)
-
-        N_spins_sys = length(Bs[n].ss_params.d)
-        @assert length(Δsys_cs[n]) == N_spins_sys + length(Bs[n].d_singlets)
-
-        for i = 1:N_spins_sys
-            j += 1
-
-            #p2 = p[j]*0.05 #*Δ_shifts[j]
-            p2 = p[j]*Δsys_cs[n][i]
-            Bs[n].ss_params.d[i] = convertΔcstoΔω0(p2, fs, SW)
-        end
-
-        for i = 1:length(Bs[n].d_singlets)
-            j += 1
-
-            p2 = p[j]*Δsys_cs[n][i+N_spins_sys]
-            Bs[n].d_singlets[i] = convertΔcstoΔω0(p2, fs, SW)
-        end
-    end
-
-    return j
-end
-
-function convertΔcstoΔω0(x::T, fs::T, SW::T)::T where T
-    return x*2*π*fs/SW
 end
