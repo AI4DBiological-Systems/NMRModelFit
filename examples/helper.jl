@@ -1,51 +1,43 @@
 
-function loadregion!(Bs::Vector{NMRModelFit.CompoundType{T, NMRModelFit.SpinSysParamsType1{T}}},
-    project_folder::String) where T
 
-    load_path = joinpath(project_folder, "region_$(r).bson")
+function loadregionsresultstype1(project_folder::String, filename::String)
+
+    load_path = joinpath(project_folder, filename)
     dic = BSON.load(load_path)
-    minf = dic[:minf]
-    minx = dic[:minx]
-    ret = dic[:ret]
-    w = dic[:w]
 
-    for n = 1:length(Bs)
+    minf_ar = convert(Vector{Float64}, dic[:minf_ar])
+    minx_ar = convert(Vector{Vector{Float64}}, dic[:minx_ar])
+    ret_ar = convert(Vector{Symbol}, dic[:ret_ar])
+    w_ar = convert(Vector{Vector{Float64}}, dic[:w_ar])
+    κs_β_an_ar = convert(Vector{Vector{Vector{Vector{Float64}}}}, dic[:κs_β_an_ar])
+    d_an_ar = convert(Vector{Vector{Vector{Float64}}}, dic[:d_an_ar])
+    β_singlets_an_ar = convert(Vector{Vector{Vector{Float64}}}, dic[:β_singlets_an_ar])
+    d_singlets_an_ar = convert(Vector{Vector{Vector{Float64}}}, dic[:d_singlets_an_ar])
 
-        if !isempty(dic[:κs_βs])
-
-            tmp = convert(Vector{Vector{Float64}}, dic[:κs_βs][n])
-            for i = 1:length(Bs[n].ss_params.κs_β)
-                Bs[n].ss_params.κs_β[i][:] = tmp[i][:]
-            end
-            Bs[n].ss_params.d[:] = convert(Vector{Float64}, dic[:ds][n])
-
-            if !isempty(Bs[n].β_singlets)
-                Bs[n].β_singlets[:] = convert(Vector{Float64}, dic[:β_singletss][n])
-                Bs[n].d_singlets[:] = convert(Vector{Float64}, dic[:d_singletss][n])
-            end
-        end
-    end
-
-    return minf, minx, rets, w
+    return minf_ar, minx_ar, ret_ar, w_ar, κs_β_an_ar, d_an_ar,
+        β_singlets_an_ar, d_singlets_an_ar, dic
 end
 
-function saveregionresults(minfs, minxs, rets, ws,
-    As, Bs, obj_funcs, project_folder::String)
+# mutates Bs.
+function saveregionsresults!(Bs,
+    minf_ar, minx_ar, ret_ar, w_ar::Vector{Vector{T}}, obj_func_ar,
+    project_folder::String, filename::String) where T
 
-    for r = 1:length(minxs)
-        obj_funcs[r](minxs[r])
+    κs_β_an_ar, d_an_ar, β_singlets_an_ar,
+    d_singlets_an_ar = NMRModelFit.exportβdfromregionsresults!(Bs, minx_ar, obj_func_ar)
 
-        save_path = joinpath(project_folder, "region_$(r).bson")
-        BSON.bson(save_path, region_min_dist = region_min_dist,
-        minf = minfs[r],
-        minx = minxs[r],
-        ret = rets[r],
-        w = ws[r],
-        κs_βs = collect( Bs[n].ss_params.κs_β for n = 1:length(Bs)),
-        ds = collect( Bs[n].ss_params.d for n = 1:length(Bs)),
-        β_singletss = collect( Bs[n].β_singlets for n = 1:length(Bs)),
-        d_singletss = collect( Bs[n].d_singlets for n = 1:length(Bs)))
-    end
+    save_path = joinpath(project_folder, filename)
+    BSON.bson(save_path, region_min_dist = region_min_dist,
+    minf_ar = minf_ar,
+    minx_ar = minx_ar,
+    ret_ar = ret_ar,
+    w_ar = w_ar,
+    κs_β_an_ar = κs_β_an_ar,
+    d_an_ar = d_an_ar,
+    β_singlets_an_ar = β_singlets_an_ar,
+    d_singlets_an_ar = d_singlets_an_ar)
+
+    return nothing
 end
 
 function plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor, display_reduction_factor,
@@ -115,7 +107,8 @@ function plotquantificationresults(As, Bs, ws, save_folder,
     canvas_size = (1000, 400),
     display_flag = false,
     save_plot_flag = true,
-    N_viz = 50000)
+    N_viz = 50000,
+    filename_prefix = "")
 
     U = LinRange(u_min, u_max, N_viz)
     P = hz2ppmfunc.(U)
@@ -132,7 +125,7 @@ function plotquantificationresults(As, Bs, ws, save_folder,
         #ws[r][1] = 0.0
         q_U = q2.(U_rad)
 
-        file_name = "real_$(r).html"
+        file_name = "$(filename_prefix)real_$(r).html"
         title_string = "$(project_name) fit results, region $(r), real part, cost = $(cost)"
 
         plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor, display_reduction_factor,

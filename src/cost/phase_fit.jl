@@ -19,7 +19,7 @@ function setupcostnesteddwarpw(Bs,
 
     ##### update functions.
     N_β = sum( getNβ(Bs[n]) for n = 1:length(Bs) )
-    N_d = sum( getNd(Bs[n]) for n = 1:length(Bs) )
+    N_d = sum( getNdvars(Bs[n]) for n = 1:length(Bs) )
     p_buffer = zeros(T, N_d)
 
     st_ind_d = 1

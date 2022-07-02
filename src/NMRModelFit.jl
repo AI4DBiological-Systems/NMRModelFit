@@ -24,6 +24,8 @@ include("../src/types.jl")
 include("../src/utils.jl")
 
 include("../src/front_end/region.jl")
+include("../src/front_end/combine_regions.jl")
+include("../src/front_end/IO.jl")
 
 include("../src/cost/prep.jl")
 include("../src/cost/LSw.jl")

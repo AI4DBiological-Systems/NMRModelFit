@@ -102,3 +102,92 @@ function Δcstoparameter!(x::Vector{T},
 
     return j
 end
+
+function extractmixtured!(p::Vector{T},
+    Bs::Vector{CompoundType{T,SpinSysParamsType2{T}}},
+    As,
+    st_ind::Int,
+    fs::T,
+    SW::T)::Int where T <: Real
+
+    j = st_ind - 1
+
+    for n = 1:length(Bs)
+
+        N_spins_sys = length(Bs[n].ss_params.κs_d)
+
+        for i = 1:N_spins_sys
+            for l = 1:length(Bs[n].ss_params.κs_d[i])
+                j += 1
+
+                p[j] = convertΔω0toΔcs(Bs[n].ss_params.κs_d[i][l], fs, SW)
+            end
+        end
+
+        for i = 1:length(Bs[n].d_singlets)
+            j += 1
+
+            p[j] = convertΔω0toΔcs(Bs[n].d_singlets[i], fs, SW)
+        end
+    end
+
+    return j
+end
+
+#### conversion from extracted cs from a fit of type1 to Δcs_offset for a fit of type2.
+
+# copies p1 's values to their corresponding entries in p2, for the cs-related structure in Bs.
+function initializeΔcsoffset!(p2::Vector{T},
+    Bs::Vector{CompoundType{T,SpinSysParamsType2{T}}},
+    p1::Vector{T},
+    As,
+    st_ind1::Int,
+    st_ind2::Int) where T <: Real
+
+    j2 = st_ind2 - 1
+    j1 = st_ind1 - 1
+
+    for n = 1:length(As)
+
+        N_spins_sys = length(Bs[n].ss_params.κs_d)
+
+        for i = 1:N_spins_sys
+            j1 += 1
+
+            for l = 1:length(Bs[n].ss_params.κs_d[i])
+                j2 += 1
+
+                p2[j2] = p1[j1]
+            end
+
+        end
+
+        for i = 1:length(Bs[n].d_singlets)
+            j2 += 1
+            j1 += 1
+
+            p2[j2] = p1[j1]
+        end
+    end
+
+    return j1, j2
+end
+
+function prepareΔcsoffset(Bs::Vector{CompoundType{T, SpinSysParamsType1{T}}},
+    Bs2::Vector{CompoundType{T, SpinSysParamsType2{T}}},
+    As::Vector{SHType{T}}, fs::T, SW::T) where T <: Real
+
+    N_d = sum( getNdvars(Bs[n]) for n = 1:length(Bs) )
+
+    extracted_Δcs = ones(N_d) .* Inf # debug: initialize to Inf.
+    extractmixtured!(extracted_Δcs, Bs, As, 1, fs, SW)
+
+    N_d2 = sum( getNdvars(Bs2[n]) for n = 1:length(Bs2) )
+    Δcs_offset2 = ones(N_d2) .* Inf
+    j1, j2 = initializeΔcsoffset!(Δcs_offset2, Bs2, extracted_Δcs, As, 1, 1)
+
+    @assert j1 == N_d
+    @assert j2 == N_d2
+
+    return Δcs_offset2
+end

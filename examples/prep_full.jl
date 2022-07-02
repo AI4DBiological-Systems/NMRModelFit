@@ -46,22 +46,25 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # project_name = "Serine-BMRB-700-20mM"
 # molecule_names = ["L-Serine";]
 
-
-###
+### Serine.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
 # project_name = "Serine-BMRB-700-20mM-mod"
 # molecule_names = ["L-Serine - mod";]
-# dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
 
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
 # project_name = "Serine-BMRB-700-20mM"
 # molecule_names = ["L-Serine";]
-# dummy_SSFID = NMRSignalSimulator.SpinSysParamsType1(0.0)
 
-experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-project_name = "Serine-BMRB-700-20mM-fine"
-molecule_names = ["L-Serine";]
-dummy_SSFID = NMRSignalSimulator.SpinSysParamsType2(0.0)
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
+# project_name = "Serine-BMRB-700-20mM-fine"
+# molecule_names = ["L-Serine";]
+
+
+
+### Phenylalanine.
+experiment_full_path = "/home/roy/MEGAsync/outputs/NMR/experiments/misc/bmse000900_L-Phenylalanine"
+project_name = "Phenylalanine-BMRB-700-20mM"
+molecule_names = ["L-Phenylalanine";]
 
 # TODO: test on DSS phenyl alanine, glucose.
 
@@ -190,13 +193,12 @@ println("Timing: getmageqinfomixture")
     unique_cs_atol = unique_cs_atol)
 
 println("Timing: setupmixtureSH()")
-@time mixture_params = NMRHamiltonian.setupmixtureSH(molecule_names,
+@time As = NMRHamiltonian.setupmixtureSH(molecule_names,
     H_params_path, dict_compound_to_filename, fs, SW,
     ν_0ppm;
     MEs = MEs,
     config_path = SH_config_path,
     prune_combo_Δc_bar_flag = prune_combo_Δc_bar_flag)
-As = mixture_params
 
 
 ΩS_ppm = NMRModelFit.getΩSppm(As, hz2ppmfunc)
@@ -208,8 +210,16 @@ u_max = ppm2hzfunc(ΩS_ppm_sorted[end] + u_offset)
 
 
 
-println("Timing: fitproxies!()")
-Bs = NMRSignalSimulator.fitproxies(As, dummy_SSFID, λ0;
+println("fitproxies!()")
+Bs = NMRSignalSimulator.fitproxies(As, NMRSignalSimulator.SpinSysParamsType1(0.0), λ0;
+    names = molecule_names,
+    config_path = surrogate_config_path,
+    Δcs_max_scalar_default = Δcs_max_scalar_default,
+    u_min = u_min,
+    u_max = u_max)
+
+#
+Bs2 = NMRSignalSimulator.fitproxies(As, NMRSignalSimulator.SpinSysParamsType2(0.0), λ0;
     names = molecule_names,
     config_path = surrogate_config_path,
     Δcs_max_scalar_default = Δcs_max_scalar_default,

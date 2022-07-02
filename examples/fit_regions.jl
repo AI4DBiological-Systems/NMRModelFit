@@ -18,11 +18,8 @@ save_plot_flag = true
 
 
 Δsys_cs_used = deepcopy(Δsys_cs)
-if typeof(dummy_SSFID) <: NMRSignalSimulator.SpinSysParamsType2
-    Δsys_cs_used = Δsys_cs .* 0.1
-end
 
-N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
+N_d = sum( NMRModelFit.getNdvars(Bs[n]) for n = 1:length(Bs) )
 N_β = sum( NMRModelFit.getNβ(Bs[n]) for n = 1:length(Bs) )
 
 Δcs_offset = zeros(N_d)
@@ -67,22 +64,15 @@ println("Timing:")
 
 dummy = 1
 
-#minxs[3][1] = 0.0
 
-#@assert 99==44
+
 
 if save_BSON_flag
-    # save_path = joinpath(project_folder, "regions_result.bson")
-    # BSON.bson(save_path, region_min_dist = region_min_dist,
-    # minfs = minfs,
-    # minxs = minxs,
-    # rets = rets,
-    # ws = ws)
-
-    saveregionresults(minfs, minxs, rets, ws, As, Bs, obj_funcs, project_folder)
+    save_name = "results_regions_type1.bson"
+    saveregionsresults!(Bs, minfs, minxs, rets, ws, obj_funcs, project_folder, save_name)
 end
 
-
+#@assert 99==44
 
 #### visualize.
 # minxs[1][1] = 0.000
@@ -112,7 +102,8 @@ plotquantificationresults(As, Bs, ws, project_folder,
     canvas_size = (1000, 400),
     display_flag = display_flag,
     save_plot_flag = save_plot_flag,
-    N_viz = 50000)
+    N_viz = 50000,
+    filename_prefix = "fit_type1_")
 
 for r in loop_range
     println("region $(r):")

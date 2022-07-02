@@ -35,7 +35,7 @@ minf, minx, rets, w = loadregion!(Bs, project_folder)
 κs_β = Bs[1].ss_params.κs_β
 d = Bs[1].ss_params.d
 
-N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
+N_d = sum( NMRModelFit.getNdvars(Bs[n]) for n = 1:length(Bs) )
 
 y_cost = y[cost_inds_set[r]]
 P_cost = P_y[cost_inds_set[r]]

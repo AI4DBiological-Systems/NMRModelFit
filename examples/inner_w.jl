@@ -38,7 +38,7 @@ w_ub_default = 100.0
 β_maxtime = Inf
 
 
-N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
+N_d = sum( NMRModelFit.getNdvars(Bs[n]) for n = 1:length(Bs) )
 #N_β = sum( NMRModelFit.getNβ(κs_β_DOFs[n], Bs[n]) for n = 1:length(Bs) )
 
 # for fine.
@@ -59,7 +59,7 @@ P_cost = P_y[cost_inds_set[r]]
 LS_inds = 1:length(U_cost)
 
 # prepare.
-#N_d = sum( NMRModelFit.getNd(Bs[n]) for n = 1:length(Bs) )
+#N_d = sum( NMRModelFit.getNdvars(Bs[n]) for n = 1:length(Bs) )
 @assert length(shift_ub) == length(shift_lb) == N_d
 
 U_rad_cost = U_cost .* (2*π)

@@ -1,7 +1,15 @@
 
+function getNdvars(A::CompoundType{T, SpinSysParamsType2{T}})::Int where T
 
+    counter_sys = 0
+    for i = 1:length(A.ss_params.κs_d)
+        counter_sys += length(A.ss_params.κs_d[i])
+    end
 
-function getNd(A::CompoundType{T,SST})::Int where {T,SST}
+    return counter_sys + length(A.d_singlets)
+end
+
+function getNdvars(A::CompoundType{T, SpinSysParamsType1{T}})::Int where T
 
     counter_sys = 0
     for i = 1:length(A.ss_params.d)

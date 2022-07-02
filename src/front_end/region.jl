@@ -28,7 +28,7 @@ function fitregions(y::Vector{Complex{T}}, U_y, P_y, As, Bs, fs, SW,
     for r in loop_range
         println("Working on region $(r)")
         obj_funcs[r], minfs[r], minxs[r], rets[r],
-        ws[r] = alignquantificationregion(y[cost_inds_set[r]],
+        ws[r] = fitmodel(y[cost_inds_set[r]],
             U_y[cost_inds_set[r]],
             P_y[cost_inds_set[r]],
             As,
@@ -57,7 +57,7 @@ function fitregions(y::Vector{Complex{T}}, U_y, P_y, As, Bs, fs, SW,
     return obj_funcs, minfs, minxs, rets, ws
 end
 
-function alignquantificationregion(y_cost::Vector{Complex{T}},
+function fitmodel(y_cost::Vector{Complex{T}},
     U_cost,
     P_cost,
     As,
@@ -84,7 +84,7 @@ function alignquantificationregion(y_cost::Vector{Complex{T}},
     β_maxtime = Inf) where T <: Real
 
     # prepare.
-    N_d = sum( getNd(Bs[n]) for n = 1:length(Bs) )
+    N_d = sum( getNdvars(Bs[n]) for n = 1:length(Bs) )
     @assert length(shift_ub) == length(shift_lb) == N_d
 
     U_rad_cost = U_cost .* (2*π)

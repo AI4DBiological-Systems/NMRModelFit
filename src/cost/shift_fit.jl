@@ -130,7 +130,7 @@ function parametertoΔcs!(x::Vector{T},
 
     for n = 1:length(Bs)
 
-        N_spins_sys = length(Bs[n].ss_params.d)
+        N_spins_sys = length(Bs[n].ss_params.κs_d)
         @assert length(Δsys_cs[n]) == N_spins_sys + length(Bs[n].d_singlets)
 
         #first.
@@ -185,10 +185,11 @@ function updatemixtured!(Bs::Vector{CompoundType{T,SpinSysParamsType2{T}}},
 
     for n = 1:length(As)
 
-        N_spins_sys = length(Bs[n].ss_params.d)
+        N_spins_sys = length(Bs[n].ss_params.κs_d)
 
         for i = 1:N_spins_sys
-            for l = 1:length(Bs[n].ss_params.d[i])
+            #for l = 1:length(Bs[n].ss_params.d[i])
+            for l = 1:length(Bs[n].ss_params.κs_d[i])
 
                 j += 1
 
