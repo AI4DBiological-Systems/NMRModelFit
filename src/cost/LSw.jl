@@ -84,9 +84,9 @@ function evaldesignmatrixw2!(F::Matrix{Complex{T}},
             # singlets.
             for k = 1:length(B.κs_λ_singlets)
 
-                F[m,n] += NMRSpectraSimulator.evalsinglets(U_rad[m], B.d_singlets,
+                F[m,n] += NMRSignalSimulator.evalclsinglets(U_rad[m], B.d_singlets,
                 A.αs_singlets, A.Ωs_singlets,
-                B.β_singlets, B.λ0, B.κs_λ_singlets, B.κs_α_singlets)
+                B.β_singlets, B.λ0, B.κs_λ_singlets)
             end
 
         end
@@ -123,9 +123,9 @@ function evaldesignmatrixw2!(F::Matrix{Complex{T}},
             # singlets.
             for k = 1:length(B.κs_λ_singlets)
 
-                F[m,n] += NMRSpectraSimulator.evalsinglets(U_rad[m], B.d_singlets,
+                F[m,n] += NMRSignalSimulator.evalclsinglets(U_rad[m], B.d_singlets,
                 A.αs_singlets, A.Ωs_singlets,
-                B.β_singlets, B.λ0, B.κs_λ_singlets, B.κs_α_singlets)
+                B.β_singlets, B.λ0, B.κs_λ_singlets)
             end
 
         end

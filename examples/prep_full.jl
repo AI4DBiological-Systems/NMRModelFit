@@ -42,31 +42,36 @@ H_params_path = "/home/roy/Documents/repo/NMRData/input/coupling_info"
 dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/input/compound_mapping/select_compounds.json")
 
 # ###
-# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-# project_name = "Serine-BMRB-700-20mM"
-# molecule_names = ["L-Serine";]
 
 ### Serine.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-# project_name = "Serine-BMRB-700-20mM-mod"
+# project_name = "Serine-BMRB-700-20mM-bmse000885-mod"
 # molecule_names = ["L-Serine - mod";]
 
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-# project_name = "Serine-BMRB-700-20mM"
+# project_name = "Serine-BMRB-700-20mM-bmse000885"
 # molecule_names = ["L-Serine";]
 
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
-# project_name = "Serine-BMRB-700-20mM-fine"
+# project_name = "Serine-BMRB-700-20mM-bmse000885-fine"
 # molecule_names = ["L-Serine";]
 
 
 
-### Phenylalanine.
-experiment_full_path = "/home/roy/MEGAsync/outputs/NMR/experiments/misc/bmse000900_L-Phenylalanine"
-project_name = "Phenylalanine-BMRB-700-20mM"
-molecule_names = ["L-Phenylalanine";]
+# ### Phenylalanine.
+# experiment_full_path = "/home/roy/MEGAsync/outputs/NMR/experiments/misc/bmse000900_L-Phenylalanine"
+# project_name = "Phenylalanine-BMRB-700-20mM-bmse000900"
+# molecule_names = ["L-Phenylalanine";]
 
-# TODO: test on DSS phenyl alanine, glucose.
+### Methionine.
+experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000915_methionine"
+project_name = "Methionine-BMRB-600-100mM-bmse000915"
+molecule_names = ["L-Methionine";]
+
+# ### Glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/glucose/Sep-25-2018"
+# project_name = "Glucose-NRC-2018"
+# molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
 
 
 # specify the NMR experiment folder
@@ -186,17 +191,16 @@ y = S_U ./ Z
 λ0 = λ_0ppm
 
 # get a surrogate where K_{n,i} is encouraged to be no larger than `early_exit_part_size`.
-println("Timing: getmageqinfomixture")
-@time MEs = NMRHamiltonian.getmageqinfomixture(molecule_names,
+println("Timing: getphysicalparameters")
+@time Phys = NMRHamiltonian.getphysicalparameters(molecule_names,
     H_params_path,
     dict_compound_to_filename;
     unique_cs_atol = unique_cs_atol)
 
 println("Timing: setupmixtureSH()")
 @time As = NMRHamiltonian.setupmixtureSH(molecule_names,
-    H_params_path, dict_compound_to_filename, fs, SW,
-    ν_0ppm;
-    MEs = MEs,
+    fs, SW, ν_0ppm,
+    Phys;
     config_path = SH_config_path,
     prune_combo_Δc_bar_flag = prune_combo_Δc_bar_flag)
 

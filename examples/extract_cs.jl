@@ -78,6 +78,13 @@ extracted_Δcs2 = NMRModelFit.prepareΔcsoffset(Bs, Bs2, As, fs, SW)
 
 r = 1
 
-y_cost = y[cost_inds_set[r]]
-P_cost = P_y[cost_inds_set[r]]
-U_cost = U_y[cost_inds_set[r]]
+
+y_cost = y[cost_inds]
+P_cost = P_y[cost_inds]
+U_cost = U_y[cost_inds]
+
+import PyPlot
+PyPlot.plot(P_y, real.(y), label = "data")
+PyPlot.plot(P_cost, y_cost, label = "cost positions", "x")
+
+PyPlot.legend()

@@ -1,3 +1,4 @@
+# fit type1-regions, get Δcs_offset2 from fit results, then fit type2-single region or entire mixture.
 
 import NMRDataSetup
 import NMRHamiltonian

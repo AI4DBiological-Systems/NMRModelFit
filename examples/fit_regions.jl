@@ -1,4 +1,3 @@
-# packaged version of align.jl. Run align_prep.jl or prep_full.jl first.
 
 include("../src/NMRModelFit.jl")
 import .NMRModelFit
