@@ -9,13 +9,13 @@ function extractmixturedwarp!(p_buffer::Vector{T},
     fs::T,
     SW::T,
     Δsys_cs::Vector{Vector{T}},
-    Δcs_offset::Vector{T},
+    Δcs_offset, Δcs_offset_singlets,
     itp_a,
     itp_b)::Int where {T <: Real, SST}
 
 
     j = extractmixtured!(p_buffer, Bs, As, st_ind, fs, SW)
-    j1 = Δcstoparameter!(p, Bs, p_buffer, st_ind, itp_a, itp_b, Δsys_cs, Δcs_offset)
+    j1 = Δcstoparameter!(p, Bs, p_buffer, st_ind, itp_a, itp_b, Δsys_cs, Δcs_offset, Δcs_offset_singlets)
 
     @assert j1 == j # debug.
 
@@ -25,6 +25,11 @@ end
 function convertΔω0toΔcs(y::T, fs::T, SW::T)::T where T
     return y*SW/(2*π*fs)
 end
+# # test.
+# x = -0.046487214000274064
+# tmp = NMRModelFit.convertΔcstoΔω0(x, fs, SW)
+# xr = NMRModelFit.convertΔω0toΔcs(tmp,fs,SW)
+# #
 
 ##### coarse shift extraction. SpinSysParamsType1.
 
@@ -65,7 +70,8 @@ function Δcstoparameter!(x::Vector{T},
     itp_a,
     itp_b,
     Δsys_cs::Vector{Vector{T}},
-    Δcs_offset::Vector{T}) where T <: Real
+    Δcs_offset,
+    Δcs_offset_singlets) where T <: Real
 
     j = st_ind - 1
 
@@ -78,7 +84,8 @@ function Δcstoparameter!(x::Vector{T},
         if N_spins_sys > 0
             j += 1
 
-            x[j] = (p[j]-Δcs_offset[j])/Δsys_cs[n][1]
+            #x[j] = (p[j]-Δcs_offset[j])/Δsys_cs[n][1]
+            x[j] = (p[j]-Δcs_offset[n][1])/Δsys_cs[n][1]
 
             # itp.
             target = convertcompactdomain(x[j], -one(T), one(T), zero(T), one(T))
@@ -89,14 +96,16 @@ function Δcstoparameter!(x::Vector{T},
         for i = 2:length(Bs[n].ss_params.d)
             j += 1
 
-            p2 = (p[j]-Δcs_offset[j])/Δsys_cs[n][i]
+            #p2 = (p[j]-Δcs_offset[j])/Δsys_cs[n][i]
+            p2 = (p[j]-Δcs_offset[n][i])/Δsys_cs[n][i]
             x[j] = MonotoneMaps.evalinversecompositelogisticprobit(p2, a, b, -one(T), one(T))
         end
 
         for i = 1:length(Bs[n].d_singlets)
             j += 1
 
-            x[j] = (p[j]-Δcs_offset[j])/Δsys_cs[n][i+N_spins_sys]
+            #x[j] = (p[j]-Δcs_offset[j])/Δsys_cs[n][i+N_spins_sys]
+            x[j] = (p[j]-Δcs_offset_singlets[n][i])/Δsys_cs[n][i+N_spins_sys]
         end
     end
 

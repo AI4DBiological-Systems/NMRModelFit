@@ -63,7 +63,7 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # project_name = "Phenylalanine-BMRB-700-20mM-bmse000900"
 # molecule_names = ["L-Phenylalanine";]
 
-### Methionine.
+### Methionine. 
 experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000915_methionine"
 project_name = "Methionine-BMRB-600-100mM-bmse000915"
 molecule_names = ["L-Methionine";]

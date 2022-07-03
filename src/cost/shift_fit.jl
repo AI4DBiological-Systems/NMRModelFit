@@ -12,13 +12,13 @@ function updatemixturedwarp!(p_buffer::Vector{T},
     fs::T,
     SW::T,
     Δsys_cs::Vector{Vector{T}},
-    Δcs_offset::Vector{T},
+    Δcs_offset, Δcs_offset_singlets,
     itp_a,
     itp_b)::Int where {T <: Real, SST}
 
     #p_buffer[:] = p_offset
 
-    j1 = parametertoΔcs!(p_buffer, Bs, p, st_ind, itp_a, itp_b, Δsys_cs, Δcs_offset)
+    j1 = parametertoΔcs!(p_buffer, Bs, p, st_ind, itp_a, itp_b, Δsys_cs, Δcs_offset, Δcs_offset_singlets)
     j = updatemixtured!(Bs, p_buffer, As, st_ind, fs, SW)
 
     @assert j1 == j # debug.
@@ -41,7 +41,8 @@ function parametertoΔcs!(x::Vector{T},
     itp_a,
     itp_b,
     Δsys_cs::Vector{Vector{T}},
-    Δcs_offset::Vector{T}) where T <: Real
+    Δcs_offset,
+    Δcs_offset_singlets) where T <: Real
 
     j = st_ind - 1
 
@@ -56,7 +57,8 @@ function parametertoΔcs!(x::Vector{T},
         #first.
         if N_spins_sys > 0
             j += 1
-            x[j] = p[j]*Δsys_cs[n][1] + Δcs_offset[j]
+            #x[j] = p[j]*Δsys_cs[n][1] + Δcs_offset[j]
+            x[j] = p[j]*Δsys_cs[n][1] + Δcs_offset[n][1][1]
 
             # itp.
             target = convertcompactdomain(p[j], -one(T), one(T), zero(T), one(T))
@@ -68,13 +70,15 @@ function parametertoΔcs!(x::Vector{T},
             j += 1
 
             p2 = MonotoneMaps.evalcompositelogisticprobit(p[j], a, b, -one(T), one(T))
-            x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[j]
+            #x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[j]
+            x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[n][i][1]
         end
 
         for i = 1:length(Bs[n].d_singlets)
             j += 1
 
-            x[j] = p[j]*Δsys_cs[n][i+N_spins_sys] + Δcs_offset[j]
+            #x[j] = p[j]*Δsys_cs[n][i+N_spins_sys] + Δcs_offset[j]
+            x[j] = p[j]*Δsys_cs[n][i+N_spins_sys] + Δcs_offset_singlets[n][i]
         end
     end
 
@@ -123,7 +127,8 @@ function parametertoΔcs!(x::Vector{T},
     itp_a,
     itp_b,
     Δsys_cs::Vector{Vector{T}},
-    Δcs_offset::Vector{T}) where T <: Real
+    Δcs_offset,
+    Δcs_offset_singlets) where T <: Real
 
 
     j = st_ind - 1
@@ -138,7 +143,8 @@ function parametertoΔcs!(x::Vector{T},
             i = 1
 
             j += 1
-            x[j] = p[j]*Δsys_cs[n][i] + Δcs_offset[j]
+            #x[j] = p[j]*Δsys_cs[n][i] + Δcs_offset[j]
+            x[j] = p[j]*Δsys_cs[n][i] + Δcs_offset[n][i][1]
 
             # itp.
             target = convertcompactdomain(p[j], -one(T), one(T), zero(T), one(T))
@@ -149,7 +155,8 @@ function parametertoΔcs!(x::Vector{T},
                 j += 1
 
                 p2 = MonotoneMaps.evalcompositelogisticprobit(p[j], a, b, -one(T), one(T))
-                x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[j]
+                #x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[j]
+                x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[n][i][l]
             end
         end
 
@@ -158,7 +165,8 @@ function parametertoΔcs!(x::Vector{T},
                 j += 1
 
                 p2 = MonotoneMaps.evalcompositelogisticprobit(p[j], a, b, -one(T), one(T))
-                x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[j]
+                #x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[j]
+                x[j]  = p2*Δsys_cs[n][i] + Δcs_offset[n][i][l]
             end
         end
 
@@ -166,7 +174,8 @@ function parametertoΔcs!(x::Vector{T},
         for i = 1:length(Bs[n].d_singlets)
             j += 1
 
-            x[j] = p[j]*Δsys_cs[n][i+N_spins_sys] + Δcs_offset[j]
+            #x[j] = p[j]*Δsys_cs[n][i+N_spins_sys] + Δcs_offset[j]
+            x[j] = p[j]*Δsys_cs[n][i+N_spins_sys] + Δcs_offset_singlets[n][i]
         end
     end
 

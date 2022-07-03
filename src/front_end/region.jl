@@ -3,8 +3,7 @@ function fitregions(y::Vector{Complex{T}}, U_y, P_y, As, Bs, fs, SW,
     shift_lb::Vector{T},
     shift_ub::Vector{T},
     cost_inds_set::Vector{Vector{Int}},
-    Δcs_offset::Vector{T};
-    loop_range = 1:length(cost_inds_set),
+    Δcs_offset, Δcs_offset_singlets;
     N_starts = 100,
     local_optim_algorithm = NLopt.LN_BOBYQA,
     xtol_rel = 1e-3,
@@ -18,14 +17,14 @@ function fitregions(y::Vector{Complex{T}}, U_y, P_y, As, Bs, fs, SW,
     β_ftol_rel = 1e-9,
     β_maxtime = Inf) where T <: Real
 
-    N_regions = length(loop_range)
+    N_regions = length(cost_inds_set)
     minxs = Vector{Vector{T}}(undef, N_regions)
     rets = Vector{Symbol}(undef, N_regions)
     minfs = Vector{T}(undef, N_regions)
     obj_funcs = Vector{Function}(undef, N_regions)
     ws = Vector{Vector{T}}(undef, N_regions)
 
-    for r in loop_range
+    for r = 1:length(cost_inds_set)
         println("Working on region $(r)")
         obj_funcs[r], minfs[r], minxs[r], rets[r],
         ws[r] = fitmodel(y[cost_inds_set[r]],
@@ -39,7 +38,7 @@ function fitregions(y::Vector{Complex{T}}, U_y, P_y, As, Bs, fs, SW,
             a_setp, b_setp,
             shift_lb,
             shift_ub,
-            Δcs_offset;
+            Δcs_offset, Δcs_offset_singlets;
             N_starts = N_starts,
             local_optim_algorithm = local_optim_algorithm,
             xtol_rel = xtol_rel,
@@ -68,7 +67,7 @@ function fitmodel(y_cost::Vector{Complex{T}},
     a_setp, b_setp,
     shift_lb::Vector{T},
     shift_ub::Vector{T},
-    Δcs_offset::Vector{T};
+    Δcs_offset, Δcs_offset_singlets;
     LS_inds = 1:length(U_cost),
     N_starts = 100,
     local_optim_algorithm = NLopt.LN_BOBYQA,
@@ -93,7 +92,7 @@ function fitmodel(y_cost::Vector{Complex{T}},
     q, updatedfunc, getshiftfunc, N_vars_set,
     run_optim, obj_func_β, E_BLS, w_BLS, b_BLS, updateβfunc, updatewfunc,
     q_β = setupcostnesteddwarpw(Bs, As, fs, SW, LS_inds, U_rad_cost,
-        y_cost, Δsys_cs, Δcs_offset, a_setp, b_setp;
+        y_cost, Δsys_cs, Δcs_offset, Δcs_offset_singlets, a_setp, b_setp;
         β_optim_algorithm = β_optim_algorithm,
         w_lb_default = w_lb_default,
         w_ub_default = w_ub_default,

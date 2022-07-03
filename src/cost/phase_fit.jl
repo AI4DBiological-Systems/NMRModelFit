@@ -6,7 +6,7 @@ function setupcostnesteddwarpw(Bs,
     U_rad_cost,
     y_cost::Vector{Complex{T}},
     Δsys_cs::Vector{Vector{T}},
-    Δcs_offset::Vector{T},
+    Δcs_offset, Δcs_offset_singlets,
     a_setp, b_setp;
     β_optim_algorithm = :GN_DIRECT_L,
     w_lb_default = 0.2,
@@ -25,7 +25,7 @@ function setupcostnesteddwarpw(Bs,
     st_ind_d = 1
     fin_ind_d = st_ind_d + N_d - 1
     updatedfunc = pp->updatemixturedwarp!(p_buffer, Bs, As, pp, st_ind_d, fs, SW,
-        Δsys_cs, Δcs_offset, a_setp, b_setp)
+        Δsys_cs, Δcs_offset, Δcs_offset_singlets, a_setp, b_setp)
 
     N_vars_set = [N_d; ]
 

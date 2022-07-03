@@ -12,9 +12,11 @@ include("helper.jl")
 
 save_BSON_flag = true
 save_plot_flag = true
+display_flag = true
+
 # save_BSON_flag = false
 # save_plot_flag = false
-
+# display_flag = true
 
 Δsys_cs_used = deepcopy(Δsys_cs)
 
@@ -31,7 +33,6 @@ a_setp, b_setp, minxs,
 #
 
 #LS_inds = 1:length(U_cost)
-loop_range = 1:length(cost_inds_set)
 
 println("Timing:")
 @time obj_funcs, minfs, minxs, rets, ws = NMRModelFit.fitregions(y,
@@ -46,8 +47,7 @@ println("Timing:")
     shift_lb,
     shift_ub,
     cost_inds_set,
-    Δcs_offset;
-    loop_range = loop_range,
+    Δcs_offset, Δcs_offset_singlets;
     N_starts = 100,
     local_optim_algorithm = NLopt.LN_BOBYQA,
     xtol_rel = 1e-9,
@@ -84,27 +84,23 @@ if "L-Isoleucine" in molecule_names
     display_reduction_factor = 1
     display_threshold_factor = 0.001/10
 end
-display_flag = true
-
-# save data plot.
-file_name = "data.html"
-plots_save_path = joinpath(project_folder, file_name)
 
 
+U = LinRange(u_min, u_max, N_viz)
+P = hz2ppmfunc.(U)
 
 plotquantificationresults(As, Bs, ws, project_folder,
-    P_y, y,
-    region_min_dist,
+    P_y, y, P, U,
     obj_funcs, minfs, minxs, rets,
     display_reduction_factor, display_threshold_factor,
-    cost_inds_set, loop_range;
+    cost_inds_set;
     canvas_size = (1000, 400),
     display_flag = display_flag,
     save_plot_flag = save_plot_flag,
     N_viz = 50000,
     filename_prefix = "fit_type1_")
 
-for r in loop_range
+for r = 1:length(cost_inds_set)
     println("region $(r):")
     println("objective: $(minfs[r]), return status: $(rets)")
     println("shift variable:")
