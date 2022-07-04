@@ -294,7 +294,7 @@ function runfitregions(y::Vector{Complex{T}},
     end
 
     N_d = sum( NMRModelFit.getNdvars(Bs[n]) for n = 1:length(Bs) )
-    
+
     shift_lb = -ones(N_d)
     shift_ub = ones(N_d)
 
@@ -357,44 +357,6 @@ function runfitregions(y::Vector{Complex{T}},
     return obj_funcs, minfs, minxs, rets, ws
 end
 
-# function preparetype2Δcsoffset!(Bs, Bs2, As,
-#     fs::T, SW::T, ν_0ppm,
-#     P_y,
-#     cost_inds_set,
-#     project_folder,
-#     type1_fit_result_filename) where T <: Real
-#
-#     hz2ppmfunc = uu->(uu - ν_0ppm)*SW/fs
-#     ppm2hzfunc = pp->(ν_0ppm + pp*fs/SW)
-#
-#     minf_ar, minx_ar, ret_ar, w_ar, κs_β_an_ar, d_an_ar,
-#         β_singlets_an_ar, d_singlets_an_ar,
-#         dic = loadregionsresultstype1(project_folder, type1_fit_result_filename)
-#
-#     #
-#     ΩS0 = NMRModelFit.getΩS(As)
-#     ΩS0_ppm = NMRModelFit.getPs(ΩS0, hz2ppmfunc)
-#
-#     active_flags_ar = collect( NMRModelFit.findcoveredspinsystems(ΩS0_ppm, P_y[cost_inds_set[r]]) for r = 1:length(cost_inds_set) )
-#
-#     κs_β_an, d_an, β_singlets_an, d_singlets_an,
-#         w = NMRModelFit.combineregionsresultstype1(As, hz2ppmfunc, P_y, cost_inds_set,
-#         w_ar, κs_β_an_ar, d_an_ar, β_singlets_an_ar, d_singlets_an_ar)
-#
-#     NMRModelFit.importβd!(Bs, κs_β_an, d_an, β_singlets_an, d_singlets_an)
-#
-#
-#     ### extract Δcs, and prepare Δcs_offset2 for type2 fit over whole region.
-#     N_d = sum( NMRModelFit.getNdvars(Bs[n]) for n = 1:length(Bs) )
-#
-#     ## want non-warped cs (not ω_cs) in ppm.
-#     extracted_Δcs = ones(N_d) .* Inf
-#     NMRModelFit.extractmixtured!(extracted_Δcs, Bs, As, 1, fs, SW)
-#
-#     extracted_Δcs2 = NMRModelFit.prepareΔcsoffset(Bs, Bs2, As, fs, SW)
-#
-#     return extracted_Δcs, extracted_Δcs2
-# end
 function preparetype2Δcsoffset(As::Vector{NMRModelFit.SHType{T}}, Phys,
     fs::T, SW::T, ν_0ppm,
     P_y,

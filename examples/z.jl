@@ -41,10 +41,10 @@ H_params_path = "/home/roy/Documents/repo/NMRData/input/coupling_info"
 dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/input/compound_mapping/select_compounds.json")
 
 
-### Methionine. # TODO diagnose.
-experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000915_methionine"
-project_name = "Methionine-BMRB-600-100mM-bmse000915"
-molecule_names = ["L-Methionine";]
+# ### Methionine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000915_methionine"
+# project_name = "Methionine-BMRB-600-100mM-bmse000915"
+# molecule_names = ["L-Methionine";]
 
 # ### Glucose.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/glucose/Sep-25-2018"
@@ -55,6 +55,41 @@ molecule_names = ["L-Methionine";]
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
 # project_name = "Serine-BMRB-700-20mM-bmse000885"
 # molecule_names = ["L-Serine";]
+
+# ### L-Leucine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/leucine-600-bmse000920_1"
+# project_name = "Leucine-BMRB-600-100mM-bmse000920"
+# molecule_names = ["L-Leucine";]
+
+# ### L-Leucine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-0.5mM/L-Leucine"
+# project_name = "Leucine-BMRB-500-0.5mM-bmse000042"
+# molecule_names = ["L-Leucine";]
+#
+### Isoleucine.
+experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Isoleucine"
+project_name = "Isoleucine-BMRB-700-20mM-bmse000884"
+molecule_names = ["L-Isoleucine";]
+#
+# ### Glutamine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Glutamine"
+# project_name = "Glutamine-BMRB-700-20mM-bmse001014"
+# molecule_names = ["L-Glutamine";]
+#
+# ### Phenylalanine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Phenylalanine"
+# project_name = "Phenylalanine-BMRB-700-20mM-bmse001016"
+# molecule_names = ["L-Phenylalanine";]
+#
+# ### Ethanol.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000297_ethanol/"
+# project_name = "Ethanol-BMRB-400-100mM-bmse000297"
+# molecule_names = ["Ethanol";]
+#
+# ### serine, glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/NRC_4_amino_acid_mixture_Jan_2022/1"
+# project_name = "NRC-Jan2022-serine-glucose"
+# molecule_names = ["L-Serine"; "alpha-D-glucose"; "beta-D-glucose"]
 
 
 project_base_folder = "/home/roy/MEGAsync/outputs/NMR/align"
@@ -113,6 +148,7 @@ obj_funcs, minfs, minxs, rets, ws = runfitregions(y,
     display_flag = true)
 
 ### prepare cs.
+#ordering, DOF = NMRHamiltonian.createorderingfromeqinds(Phys[n].ME[i], As[n].N_spins_sys[i])
 Δcs_an_ravg, Δcs_an_singlets_ravg, Δcs_an_r, Δcs_singlets_an_r = preparetype2Δcsoffset(As, Phys,
     fs, SW, ν_0ppm,
     P_y,
@@ -121,8 +157,8 @@ obj_funcs, minfs, minxs, rets, ws = runfitregions(y,
     "results_regions_type1.bson")
 
 
-Δsys_cs_refine = Δsys_cs .* 0.05
-#Δsys_cs_refine = Δsys_cs .* 0.1
+#Δsys_cs_refine = Δsys_cs .* 0.05
+Δsys_cs_refine = Δsys_cs .* 0.1
 Δcs_offset2 = Δcs_an_ravg
 Δcs_offset_singlets2 = Δcs_an_singlets_ravg
 

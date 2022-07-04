@@ -120,13 +120,16 @@ function getcs(As::Vector{SHType{T}}, Phys::Vector{PhysicalParamsType{T}}) where
 
         for i = 1:N_sys
 
-            L = length(As[n].Δc_bar[i])
-            inds_set = collect( l for l = 1:L )
-            if !isempty(Phys[n].ME[i])
-                L = length(Phys[n].ME[i])
-                inds_set = collect( Phys[n].ME[i][l][1] for l = 1:L )
-            end
-            cs_an[n][i] = collect( Phys[n].cs_sys[i][inds_set[l]] for l = 1:L )
+            # L = length(As[n].Δc_bar[i])
+            # inds_set = collect( l for l = 1:L )
+            # if !isempty(Phys[n].ME[i])
+            #     L = length(Phys[n].ME[i])
+            #     inds_set = collect( Phys[n].ME[i][l][1] for l = 1:L )
+            # end
+            # cs_an[n][i] = collect( Phys[n].cs_sys[i][inds_set[l]] for l = 1:L )
+
+            ordering, DOF = NMRHamiltonian.createorderingfromeqinds(Phys[n].ME[i], As[n].N_spins_sys[i])
+            cs_an[n][i] = NMRHamiltonian.condensenuclei(Phys[n].cs_sys[i], ordering, DOF)
         end
 
 
