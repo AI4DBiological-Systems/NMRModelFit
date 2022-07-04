@@ -106,6 +106,24 @@ end
 
 #### conversion of cs to type2's κs_d.
 
+# based on NMRHamiltonian.condensenuclei, but with avg instead of sum.
+function condensenucleiavg(x::Vector{T}, ordering::Vector{Int}, N::Int)::Vector{T} where T
+    @assert length(x) == length(ordering)
+    @assert norm(collect(1:N) - sort(unique(ordering))) < 1e-14
+
+    y = zeros(T, N)
+    Ns = zeros(Int, N)
+    for i = 1:length(x)
+
+        k = ordering[i]
+        y[k] += x[i]
+        Ns[k] += 1
+    end
+
+    return y ./ Ns
+    #return y
+end
+
 # κs_d[n][i][l]
 # cs_an[n][i][l]
 function getcs(As::Vector{SHType{T}}, Phys::Vector{PhysicalParamsType{T}}) where T <: Real
@@ -129,7 +147,7 @@ function getcs(As::Vector{SHType{T}}, Phys::Vector{PhysicalParamsType{T}}) where
             # cs_an[n][i] = collect( Phys[n].cs_sys[i][inds_set[l]] for l = 1:L )
 
             ordering, DOF = NMRHamiltonian.createorderingfromeqinds(Phys[n].ME[i], As[n].N_spins_sys[i])
-            cs_an[n][i] = NMRHamiltonian.condensenuclei(Phys[n].cs_sys[i], ordering, DOF)
+            cs_an[n][i] = condensenucleiavg(Phys[n].cs_sys[i], ordering, DOF)
         end
 
 
@@ -139,6 +157,43 @@ function getcs(As::Vector{SHType{T}}, Phys::Vector{PhysicalParamsType{T}}) where
     return cs_an, cs_singlets_an
 end
 
+function getΔcstype1(d_an_ar::Vector{Vector{Vector{T}}},
+    d_singlets_an_ar::Vector{Vector{Vector{T}}},
+    fs::T, SW::T) where T <: Real
+
+    #
+    Δcs_an_ar = Vector{Vector{Vector{T}}}(undef, length(d_an_ar))
+    for r = 1:length(d_an_ar)
+        Δcs_an_ar[r] = Vector{Vector{T}}(undef, length(d_an_ar[r]))
+
+        for n = 1:length(d_an_ar[r])
+            Δcs_an_ar[r][n] = Vector{T}(undef, length(d_an_ar[r][n]))
+            for i = 1:length(d_an_ar[r][n])
+                Δcs_an_ar[r][n][i] = NMRModelFit.convertΔω0toΔcs(d_an_ar[r][n][i], fs, SW)
+            end
+        end
+    end
+
+    Δcs_singlets_an_ar = Vector{Vector{Vector{T}}}(undef, length(d_singlets_an_ar))
+    for r = 1:length(d_singlets_an_ar)
+        Δcs_singlets_an_ar[r] = Vector{Vector{T}}(undef, length(d_singlets_an_ar[r]))
+
+        for n = 1:length(d_singlets_an_ar[r])
+            Δcs_singlets_an_ar[r][n] = Vector{T}(undef, length(d_singlets_an_ar[r][n]))
+            for i = 1:length(d_singlets_an_ar[r][n])
+                Δcs_singlets_an_ar[r][n][i] = NMRModelFit.convertΔω0toΔcs(d_singlets_an_ar[r][n][i], fs, SW)
+            end
+        end
+    end
+
+    return Δcs_an_ar, Δcs_singlets_an_ar
+end
+
+
+# A is Δcs_an_r
+# B is Δcs_an_ravg
+# S is Δcs_singlets_an_r
+# V is Δcs_an_singlets_ravg
 function getΔcstype2(P_y, cost_inds_set::Vector{Vector{Int}},
     cs_an::Vector{Vector{Vector{T}}},
     cs_singlets_an::Vector{Vector{T}},

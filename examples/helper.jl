@@ -45,7 +45,10 @@ function plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor,
     save_plot_flag = true,
     display_plot_flag = true,
     canvas_size = (1000, 400),
-    spectrum_processing_func = real)
+    spectrum_processing_func = real,
+    ref_P,
+    ref_y,
+    ref_label_string = "reference")
 
     vertical_tag = ""
     if spectrum_processing_func == real
@@ -95,6 +98,14 @@ function plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor,
         markershape = :circle,
         seriestype = :scatter,
         xflip = true)
+
+    if !isempty(ref_P) && !isempty(ref_y)
+        Plots.plot!(plot_obj, ref_P, spectrum_processing_func.(ref_y), label = ref_label_string,
+            seriestype = :line,
+            linestyle = :dot,
+            xflip = true,
+            linewidth = 4)
+    end
 
     if save_plot_flag
         Plots.savefig(plot_obj, plots_save_path)
@@ -382,6 +393,8 @@ function runfitmixture(y_cost::Vector{Complex{T}}, P_cost, U_cost,
     a_setp, b_setp, P, U,
     project_name, save_folder, filename_prefix, BSON_filename;
     maxeval = 50,
+    N_starts = 100,
+    β_max_iters = 500,
     save_BSON_flag = true,
     save_plot_flag = true,
     display_plot_flag = true,
@@ -411,7 +424,7 @@ function runfitmixture(y_cost::Vector{Complex{T}}, P_cost, U_cost,
         shift_ub,
         Δcs_offset,
         Δcs_offset_singlets;
-        N_starts = 100,
+        N_starts = N_starts,
         local_optim_algorithm = NLopt.LN_BOBYQA,
         xtol_rel = 1e-9,
         maxeval = maxeval, # 2, # 50,
@@ -419,7 +432,7 @@ function runfitmixture(y_cost::Vector{Complex{T}}, P_cost, U_cost,
         β_optim_algorithm = :GN_DIRECT_L,
         w_lb_default = 1e-1,
         w_ub_default = 100.0,
-        β_max_iters = 500, # 2, # 500,
+        β_max_iters = β_max_iters, # 2, # 500,
         β_xtol_rel = 1e-9,
         β_ftol_rel = 1e-9,
         β_maxtime = Inf)
@@ -463,10 +476,25 @@ function runfitmixture(y_cost::Vector{Complex{T}}, P_cost, U_cost,
 
     end
 
-    ### plot.
+    ### eval.
     U_rad = U .* (2*π)
     q_U = q2.(U_rad)
 
+    #### initial.
+    cost_initial = obj_func(zeros(T,length(minx)))
+    println("initial cost = ", cost_initial)
+
+    # load these cs into SH simulation to get proper amplitude.
+    extracted_Δcs0 = ones(N_d) .* Inf
+    NMRModelFit.extractmixtured!(extracted_Δcs0, Bs, As, 1, fs, SW)
+    println("extracted_Δcs0 = ", extracted_Δcs0)
+
+    q0 = uu->NMRSignalSimulator.evalclproxymixture(uu, As, Bs; w = w)
+
+    ### eval.
+    q_U_initial = q0.(U_rad)
+
+    ### plot.
     file_name = "$(filename_prefix)real.html"
     title_string = "$(project_name), cost = $(cost)"
 
@@ -475,7 +503,10 @@ function runfitmixture(y_cost::Vector{Complex{T}}, P_cost, U_cost,
         save_plot_flag = save_plot_flag,
         display_plot_flag = display_plot_flag,
         canvas_size = canvas_size,
-        spectrum_processing_func = real)
+        spectrum_processing_func = real,
+        ref_P = P,
+        ref_y = q_U_initial,
+        ref_label_string = "initial model")
     #
     file_name = "$(filename_prefix)imaginary.html"
     title_string = "Fit for $(project_name), cost = $(cost)"
@@ -485,7 +516,10 @@ function runfitmixture(y_cost::Vector{Complex{T}}, P_cost, U_cost,
         save_plot_flag = save_plot_flag,
         display_plot_flag = display_plot_flag,
         canvas_size = canvas_size,
-        spectrum_processing_func = imag)
+        spectrum_processing_func = imag,
+        ref_P = P,
+        ref_y = q_U_initial,
+        ref_label_string = "initial model")
 
     return obj_func, minf, minx, ret, w, extracted_Δcs2
 end
