@@ -46,10 +46,11 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # project_name = "Methionine-BMRB-600-100mM-bmse000915"
 # molecule_names = ["L-Methionine";]
 
-### Glucose.
-experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/glucose/Sep-25-2018"
-project_name = "Glucose-NRC-2018"
-molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
+# ### Glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/glucose/Sep-25-2018"
+# project_name = "Glucose-NRC-2018"
+# #project_name = "Glucose-NRC-2018-BB"
+# molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
 
 # ### Serine.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
@@ -71,11 +72,6 @@ molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
 # project_name = "Isoleucine-BMRB-700-20mM-bmse000884"
 # molecule_names = ["L-Isoleucine";]
 #
-# ### Glutamine.
-# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Glutamine"
-# project_name = "Glutamine-BMRB-700-20mM-bmse001014"
-# molecule_names = ["L-Glutamine";]
-#
 # ### Phenylalanine.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Phenylalanine"
 # project_name = "Phenylalanine-BMRB-700-20mM-bmse001016"
@@ -86,10 +82,15 @@ molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
 # project_name = "Ethanol-BMRB-400-100mM-bmse000297"
 # molecule_names = ["Ethanol";]
 #
-# ### serine, glucose.
-# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/NRC_4_amino_acid_mixture_Jan_2022/1"
-# project_name = "NRC-Jan2022-serine-glucose"
-# molecule_names = ["L-Serine"; "alpha-D-Glucose"; "beta-D-Glucose"]
+# ### Glutamine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Glutamine"
+# project_name = "Glutamine-BMRB-700-20mM-bmse001014"
+# molecule_names = ["L-Glutamine";]
+#
+### serine, glucose.
+experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/NRC_4_amino_acid_mixture_Jan_2022/1"
+project_name = "NRC-Jan2022-serine-glucose"
+molecule_names = ["L-Serine"; "alpha-D-Glucose"; "beta-D-Glucose"]
 
 
 project_base_folder = "/home/roy/MEGAsync/outputs/NMR/align"
@@ -132,20 +133,20 @@ P = hz2ppmfunc.(U)
 ### first fit.
 Δcs_offset, Δcs_offset_singlets = NMRModelFit.initializeΔcstype1(Bs)
 
-# obj_funcs, minfs, minxs, rets, ws = runfitregions(y,
-#     U_y,
-#     P_y,
-#     P, U,
-#     As,
-#     Bs,
-#     fs,
-#     SW,
-#     Δsys_cs, a_setp, b_setp, cost_inds_set,
-#     u_min, u_max, Δcs_offset, Δcs_offset_singlets;
-#     maxeval = 50,
-#     save_BSON_flag = true,
-#     save_plot_flag = true,
-#     display_flag = true)
+obj_funcs, minfs, minxs, rets, ws = runfitregions(y,
+    U_y,
+    P_y,
+    P, U,
+    As,
+    Bs,
+    fs,
+    SW,
+    Δsys_cs, a_setp, b_setp, cost_inds_set,
+    u_min, u_max, Δcs_offset, Δcs_offset_singlets;
+    maxeval = 50,
+    save_BSON_flag = true,
+    save_plot_flag = true,
+    display_flag = true)
 
 ### prepare cs.
 #ordering, DOF = NMRHamiltonian.createorderingfromeqinds(Phys[n].ME[i], As[n].N_spins_sys[i])
@@ -159,7 +160,8 @@ P = hz2ppmfunc.(U)
 
 Δsys_cs_refine = Δsys_cs .* 0.05 # glucose, serine.
 #Δsys_cs_refine = Δsys_cs .* 0.1
-Δcs_offset2 = Δcs_an_ravg
+#Δcs_offset2 = Δcs_an_ravg
+Δcs_offset2 = -Δcs_an_ravg # each Δc_bar sums to -1.
 Δcs_offset_singlets2 = Δcs_an_singlets_ravg
 
 ### 2nd fit, for the entire mixture.

@@ -166,3 +166,78 @@ function costnesteddw(U,
 
     return cost
 end
+
+
+#### black box optim.
+function fitmodelBlackBoxOptim(y_cost::Vector{Complex{T}},
+    U_cost,
+    P_cost,
+    As,
+    Bs,
+    fs,
+    SW,
+    Δsys_cs,
+    a_setp, b_setp,
+    shift_lb::Vector{T},
+    shift_ub::Vector{T},
+    Δcs_offset, Δcs_offset_singlets;
+    initial_guess::Vector{T} = zeros(T, length(shift_lb)),
+    LS_inds = 1:length(U_cost),
+    N_starts = 100,
+    local_optim_algorithm = :adaptive_de_rand_1_bin,
+    xtol_rel = 1e-3,
+    maxeval = 50,
+    maxtime = Inf,
+    β_optim_algorithm = :GN_DIRECT_L,
+    w_lb_default = 1e-3,
+    w_ub_default = 1e2,
+    β_max_iters = 500,
+    β_xtol_rel = 1e-9,
+    β_ftol_rel = 1e-9,
+    β_maxtime = Inf) where T <: Real
+
+    # prepare.
+    N_d = sum( getNdvars(Bs[n]) for n = 1:length(Bs) )
+    @assert length(shift_ub) == length(shift_lb) == N_d
+
+    U_rad_cost = U_cost .* (2*π)
+
+    # setup inner optim over β.
+    q, updatedfunc, getshiftfunc, N_vars_set,
+    run_optim, obj_func_β, E_BLS, w_BLS, b_BLS, updateβfunc, updatewfunc,
+    q_β = setupcostnesteddwarpw(Bs, As, fs, SW, LS_inds, U_rad_cost,
+        y_cost, Δsys_cs, Δcs_offset, Δcs_offset_singlets, a_setp, b_setp;
+        β_optim_algorithm = β_optim_algorithm,
+        w_lb_default = w_lb_default,
+        w_ub_default = w_ub_default,
+        β_max_iters = β_max_iters,
+        β_xtol_rel = β_xtol_rel,
+        β_ftol_rel = β_ftol_rel,
+        β_maxtime = β_maxtime)
+
+    # set up outer optim over shifts.
+    N_β = sum( getNβ(Bs[n]) for n = 1:length(Bs) )
+
+    p_β = zeros(T, N_β) # persistant buffer.
+
+    obj_func = pp->costnesteddw(U_rad_cost, y_cost, updatedfunc, updatewfunc,
+    pp, Bs, run_optim, E_BLS, w_BLS, b_BLS, p_β)
+
+    # optim.
+    search_range = collect( (shift_lb[i], shift_ub[i]) for i = 1:length(shift_lb) )
+
+    res = BlackBoxOptim.bboptimize(obj_func, initial_guess;
+        SearchRange = search_range,
+        Method = local_optim_algorithm,
+        MaxTime = maxtime,
+        MaxFuncEvals = maxeval)
+
+    minx = BlackBoxOptim.best_candidate(res)
+    minf = BlackBoxOptim.best_fitness(res)
+    ret = Symbol(res.stop_reason)
+
+    # force w_BLS to update.
+    obj_func(minx)
+
+    return obj_func, minf, minx, ret, w_BLS
+end

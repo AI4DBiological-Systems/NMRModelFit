@@ -6,6 +6,7 @@ using LinearAlgebra
 import NLopt, BSON, Statistics, JSON, Interpolations
 
 import MultistartOptimization
+import BlackBoxOptim
 
 #import NMRData
 import NMRDataSetup # https://github.com/AI4DBiological-Systems/NMRDataSetup.jl
