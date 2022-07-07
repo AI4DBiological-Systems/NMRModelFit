@@ -46,8 +46,15 @@ function plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor,
     display_plot_flag = true,
     canvas_size = (1000, 400),
     spectrum_processing_func = real,
-    ref_P,
-    ref_y,
+    line_width = 4,
+    line_style = :dot,
+    legend_font_size = 10,
+    x_guide_font_size = 16,
+    y_guide_font_size = 16,
+    x_tick_font_size = 13,
+    y_tick_font_size = 13,
+    ref_P = [],
+    ref_y = [],
     ref_label_string = "reference")
 
     vertical_tag = ""
@@ -82,19 +89,24 @@ function plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor,
         ticks = :native,
         xlims = (P_display[1],P_display[end]),
         hover = P_display,
-        linewidth = 4,
+        linewidth = line_width,
         xlabel = "ppm",
-        ylabel = "$(vertical_tag) spectrum",
+        ylabel = "$(vertical_tag) of spectrum",
         xflip = true,
+        legendfontsize = legend_font_size,
+        xguidefontsize = x_guide_font_size,
+        yguidefontsize = y_guide_font_size,
+        xtickfontsize = x_tick_font_size,
+        ytickfontsize = y_tick_font_size,
         size = canvas_size)
 
-    Plots.plot!(plot_obj, P_y, spectrum_processing_func.(y), label = "full data",
+    Plots.plot!(plot_obj, P_y, spectrum_processing_func.(y), label = "data",
         seriestype = :line,
-        linestyle = :dot,
+        linestyle = line_style,
         xflip = true,
-        linewidth = 4)
+        linewidth = line_width)
 
-    Plots.plot!(plot_obj, P_cost, spectrum_processing_func.(y_cost), label = "fit data",
+    Plots.plot!(plot_obj, P_cost, spectrum_processing_func.(y_cost), label = "fit positions",
         markershape = :circle,
         seriestype = :scatter,
         xflip = true)
@@ -102,9 +114,9 @@ function plotregion(P, U, q_U, P_y, y, P_cost, y_cost, display_threshold_factor,
     if !isempty(ref_P) && !isempty(ref_y)
         Plots.plot!(plot_obj, ref_P, spectrum_processing_func.(ref_y), label = ref_label_string,
             seriestype = :line,
-            linestyle = :dot,
+            linestyle = line_style,
             xflip = true,
-            linewidth = 4)
+            linewidth = line_width)
     end
 
     if save_plot_flag

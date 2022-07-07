@@ -6,10 +6,10 @@ using LinearAlgebra
 import NLopt, BSON, Statistics, JSON, Interpolations
 
 import MultistartOptimization
-import BlackBoxOptim
+#import BlackBoxOptim
 
 #import NMRData
-import NMRDataSetup # https://github.com/AI4DBiological-Systems/NMRDataSetup.jl
+#import NMRDataSetup # https://github.com/AI4DBiological-Systems/NMRDataSetup.jl
 import BoundedLeastSquares # https://github.com/nboyd/BoundedLeastSquares.jl
 
 # dependencies to NMRSpecifyRegions. Need to add explicitly since these packages are not on the Julia public registry.
@@ -28,6 +28,7 @@ include("../src/front_end/region.jl")
 include("../src/front_end/combine_regions.jl")
 include("../src/front_end/IO.jl")
 
+include("../src/cost/solvent.jl")
 include("../src/cost/prep.jl")
 include("../src/cost/LSw.jl")
 include("../src/cost/phase_fit.jl")

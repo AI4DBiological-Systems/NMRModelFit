@@ -63,16 +63,19 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # project_name = "Phenylalanine-BMRB-700-20mM-bmse000900"
 # molecule_names = ["L-Phenylalanine";]
 
-### Methionine. 
-experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000915_methionine"
-project_name = "Methionine-BMRB-600-100mM-bmse000915"
-molecule_names = ["L-Methionine";]
+# ### Methionine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000915_methionine"
+# project_name = "Methionine-BMRB-600-100mM-bmse000915"
+# molecule_names = ["L-Methionine";]
 
 # ### Glucose.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/glucose/Sep-25-2018"
 # project_name = "Glucose-NRC-2018"
 # molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
 
+experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/NRC_4_amino_acid_mixture_Jan_2022/1"
+project_name = "NRC-Jan2022-serine-glucose-debug"
+molecule_names = ["L-Serine"; "alpha-D-Glucose"; "beta-D-Glucose"]
 
 # specify the NMR experiment folder
 #experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000297_ethanol/"
@@ -91,45 +94,9 @@ molecule_names = ["L-Methionine";]
 #experiment_full_path = "/home/roy/MEGAsync/outputs/NMR/experiments/misc/bmse000900_L-Phenylalanine"
 #experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/glucose-600-bmse000855_1"
 
-# specify where the calibration results should be saved for this experiment.
-#project_name = "ethanol"
-#project_name = "NRC-glucose-2018"
-
-#project_name = "Serine-BMRB-700-20mM-2000entry"
-#project_name = "Serine-BMRB-700-20mM-mod"
-#project_name = "Serine-BMRB-500-0.5mM-mod" #project_name = "Serine-BMRB-500-0.5mM"
-
- #project_name = "Serine-glucose-NRC-Jan2022"
-#project_name = "NRC-Jan2022-serine-glucose-dss"
-
-#project_name = "Isoleucine-BMRB-700-20mM"
-#project_name = "Glutamine-BMRB-700-20mM"
-#project_name = "Leucine-BMRB-500-0.5mM" # skipped.
-#project_name = "Leucine-BMRB-600-100mM"
-#project_name = "bmse000795_2_DSS" # skipped.
-#project_name = "gissmo_DSS"
-#project_name = "Phenylalanine-GISSMO-600-bmse000900"
-#project_name = "Leucine-BMRB-600" #
-#project_name = "ATP-BMRB-700-20mM"
-
-#project_name = "Phenylalanine-GISSMO-600-bmse000900-poster"
-#project_name = "glucose-600-bmse000855_1-poster"
-
-#molecule_names = ["Ethanol";]
-#molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
-#molecule_names = ["L-Serine - mod"; "alpha-D-Glucose"; "beta-D-Glucose";]
-#molecule_names = ["D-Glucose - 2000 study";] #molecule_names = ["D-(+)-Glucose";]
-#molecule_names = ["D-(+)-Glucose";]
-
-
 #molecule_names = ["L-Serine - 2000 study";]
 #molecule_names = ["L-Serine - mod";]
 
-#molecule_names = ["L-Isoleucine";]
-#molecule_names = ["L-Glutamine";]
-#molecule_names = ["L-Leucine";]
-#molecule_names = ["DSS";]
-#molecule_names = ["L-Phenylalanine"]
 
 project_base_folder = "/home/roy/MEGAsync/outputs/NMR/align"
 #project_base_folder = "/home/roy/MEGAsync/outputs/NMR/calibrate" # old.
@@ -185,6 +152,9 @@ Z = abs(S_U[ind])
 
 y = S_U ./ Z
 #####
+
+
+
 #@assert 1==2
 
 ####### compute surrogate.

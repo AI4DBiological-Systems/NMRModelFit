@@ -61,11 +61,6 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/leucine-600-bmse000920_1"
 # project_name = "Leucine-BMRB-600-100mM-bmse000920"
 # molecule_names = ["L-Leucine";]
-
-# ### L-Leucine.
-# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-0.5mM/L-Leucine"
-# project_name = "Leucine-BMRB-500-0.5mM-bmse000042"
-# molecule_names = ["L-Leucine";]
 #
 # ### Isoleucine.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Isoleucine"
@@ -77,6 +72,11 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # project_name = "Phenylalanine-BMRB-700-20mM-bmse001016"
 # molecule_names = ["L-Phenylalanine";]
 #
+### L-Leucine.
+experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-0.5mM/L-Leucine"
+project_name = "Leucine-BMRB-500-0.5mM-bmse000042"
+molecule_names = ["L-Leucine";]
+#
 # ### Ethanol.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000297_ethanol/"
 # project_name = "Ethanol-BMRB-400-100mM-bmse000297"
@@ -87,10 +87,26 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # project_name = "Glutamine-BMRB-700-20mM-bmse001014"
 # molecule_names = ["L-Glutamine";]
 #
-### serine, glucose.
-experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/NRC_4_amino_acid_mixture_Jan_2022/1"
-project_name = "NRC-Jan2022-serine-glucose"
-molecule_names = ["L-Serine"; "alpha-D-Glucose"; "beta-D-Glucose"]
+# ### serine, glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/NRC_4_amino_acid_mixture_Jan_2022/1"
+# project_name = "NRC-Jan2022-serine-glucose"
+# molecule_names = ["L-Serine"; "alpha-D-Glucose"; "beta-D-Glucose"]
+
+# ### DMEM. serine-glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/dmem_medium/Oct-22-2012"
+# project_name = "NRC-DMEM-serine-glucose"
+# molecule_names = ["L-Serine"; "alpha-D-Glucose"; "beta-D-Glucose"]
+
+# ### DMEM.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/dmem_medium/Oct-22-2012"
+# project_name = "NRC-DMEM-glutamine-glucose"
+# molecule_names = ["L-Glutamine"; "alpha-D-Glucose"; "beta-D-Glucose"]
+#
+# ### Leucine, GISSMO 900MHz.
+# experiment_full_path = "/home/roy/Downloads/GISSMO_L_leucine_900MHz"
+# project_name = "GISSMO-leucine"
+# molecule_names = ["L-Leucine"; ]
+
 
 
 project_base_folder = "/home/roy/MEGAsync/outputs/NMR/align"
@@ -119,7 +135,7 @@ u_min, u_max, cost_inds, Phys = setupfitsession(SH_config_path,
 # new normalization.
 Z = maximum( maximum(abs.(y[cost_inds_set[r]])) for r = 1:length(cost_inds_set) )
 y = y ./ Z
-
+@assert 1==2
 a_setp, b_setp, minxs,
     rets = NMRModelFit.setupitpab(0.1, 10, 0.7; optim_algorithm = :LN_BOBYQA)
 #

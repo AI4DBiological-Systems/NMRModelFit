@@ -58,32 +58,21 @@ cs_an, cs_singlets_an = NMRModelFit.getcs(As, Phys)
 #d_an[n][i][l]
 #d_singlets_an[n][i]
 
-#isoleucine.
-# d_singlets_an[1][1] = NMRModelFit.convertΔcstoΔω0(0.0004742469192480768, fs, SW)
-#
+# ##isoleucine.
 # d_an[1][1][6] = NMRModelFit.convertΔcstoΔω0(0.002251401984308625, fs, SW) #.
 # κs_β_an[1][1][:] = [-1.0457610662155323, 3.140156168608727, -1.0457610662155323, -1.0457610662155323, -1.0457610662155323, -2.4477704077352573]
 # w[1] = 1.8075560511122795
 
-# alpha-glucose. [n][i][k], last group is 5.2 ppm doublet.
-d_an[1][1][end] = NMRModelFit.convertΔcstoΔω0(-0.0056653618310591285, fs, SW)
-
-# beta-glucose. [n][i][k] last group is 4.6 ppm doublet.
-d_an[2][1][end] = NMRModelFit.convertΔcstoΔω0(-0.006076603072532248, fs, SW)
+# ## alpha-glucose. [n][i][k], last group is 5.2 ppm doublet.
+# d_an[1][1][end] = NMRModelFit.convertΔcstoΔω0(-0.0056653618310591285, fs, SW)
+#
+# ## beta-glucose. [n][i][k] last group is 4.6 ppm doublet.
+# d_an[2][1][end] = NMRModelFit.convertΔcstoΔω0(-0.006076603072532248, fs, SW)
 
 # n = 2
 # i = 1
 # ordering, DOF = NMRHamiltonian.createorderingfromeqinds(Phys[n].ME[i], As[n].N_spins_sys[i])
-
-# #d_an[2][1][1] = NMRModelFit.convertΔcstoΔω0(-0.006076603072532248, fs, SW)
-# d_an[2][1][1] = NMRModelFit.convertΔcstoΔω0(0.2, fs, SW)
-# #κs_β_an[2][1][1] = 0.6981317007977319
-
-# d_an[1][1][6] = NMRModelFit.convertΔcstoΔω0(0.002251401984308625, fs, SW) #.
-# κs_β_an[1][1][:] = [-1.0457610662155323, 3.140156168608727, -1.0457610662155323, -1.0457610662155323, -1.0457610662155323, -2.4477704077352573]
-# w[1] = 1.8075560511122795
-
-#NMRModelFit.convertΔω0toΔcs.(d_an[2][1], fs, SW)
+# NMRModelFit.convertΔω0toΔcs.(d_an[2][1], fs, SW)
 
 
 #@assert 1==2
