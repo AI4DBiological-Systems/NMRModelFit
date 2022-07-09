@@ -67,7 +67,7 @@ println("Timing: setupmixtureSH()")
     fs, SW, ν_0ppm,
     Phys;
     config_path = SH_config_path,
-    prune_combo_Δc_bar_flag = true)
+    prune_combo_Δc_flag = true)
 
 cs_an11, cs_singlets_an11 = NMRModelFit.getcs(As11, Phys11)
 

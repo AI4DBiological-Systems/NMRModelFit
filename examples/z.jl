@@ -49,8 +49,34 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # ### Glucose.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/NRC/misc/glucose/Sep-25-2018"
 # project_name = "Glucose-NRC-2018"
-# #project_name = "Glucose-NRC-2018-BB"
 # molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
+
+### Glucose.
+experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/D-(+)-Glucose"
+project_name = "Glucose-BMRB-700-20mM-bmse000797"
+molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
+
+
+# ### Glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-100mM/D-(+)-Glucose"
+# project_name = "Glucose-BMRB-500-100mM-bmse000015"
+# molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
+#
+# ### Glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-2mM/D-(+)-Glucose"
+# project_name = "Glucose-BMRB-500-2mM-bmse000015"
+# molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
+#
+# ### Glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-0.5mM/D-(+)-Glucose"
+# project_name = "Glucose-BMRB-500-0.5mM-bmse000015"
+# molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
+
+# ### Glucose.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/glucose-600-bmse000855_1"
+# project_name = "Glucose-BMRB-600-100mM-bmse000855"
+# molecule_names = ["alpha-D-Glucose"; "beta-D-Glucose";]
+
 
 # ### Serine.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-700-20mM/L-Serine"
@@ -72,10 +98,10 @@ dict_compound_to_filename = JSON.parsefile("/home/roy/Documents/repo/NMRData/inp
 # project_name = "Phenylalanine-BMRB-700-20mM-bmse001016"
 # molecule_names = ["L-Phenylalanine";]
 #
-### L-Leucine.
-experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-0.5mM/L-Leucine"
-project_name = "Leucine-BMRB-500-0.5mM-bmse000042"
-molecule_names = ["L-Leucine";]
+# ### L-Leucine.
+# experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/BMRB/similar_settings/BMRB-500-0.5mM/L-Leucine"
+# project_name = "Leucine-BMRB-500-0.5mM-bmse000042"
+# molecule_names = ["L-Leucine";]
 #
 # ### Ethanol.
 # experiment_full_path = "/home/roy/Documents/repo/NMRData/experiments_1D1H/misc/bmse000297_ethanol/"
@@ -129,13 +155,13 @@ u_min, u_max, cost_inds, Phys = setupfitsession(SH_config_path,
     offset_ppm = 0.3,
     Δcs_max_scalar_default = 0.2,
     unique_cs_atol = 1e-6,
-    prune_combo_Δc_bar_flag = true,
+    prune_combo_Δc_flag = true,
     region_min_dist = 0.1)
 
 # new normalization.
 Z = maximum( maximum(abs.(y[cost_inds_set[r]])) for r = 1:length(cost_inds_set) )
 y = y ./ Z
-@assert 1==2
+
 a_setp, b_setp, minxs,
     rets = NMRModelFit.setupitpab(0.1, 10, 0.7; optim_algorithm = :LN_BOBYQA)
 #

@@ -354,7 +354,7 @@ version = "2.7.1+0"
 
 [[NMRHamiltonian]]
 deps = ["Distributed", "FFTW", "Graphs", "Interpolations", "JSON", "Kronecker", "LinearAlgebra", "NearestNeighbors", "OffsetArrays", "SharedArrays", "Statistics"]
-git-tree-sha1 = "f1d329909586f37f649a9abd46cdcbe0e5da5066"
+git-tree-sha1 = "a37e8955a0112b200c32e9980a5c77785b279254"
 repo-rev = "main"
 repo-url = "https://github.com/AI4DBiological-Systems/NMRHamiltonian.jl"
 uuid = "d73005cc-2eb2-45b3-9785-29d07aec07ac"
@@ -362,7 +362,7 @@ version = "0.1.0"
 
 [[NMRSignalSimulator]]
 deps = ["Distributed", "FFTW", "Interpolations", "JSON", "LinearAlgebra", "NMRHamiltonian", "OffsetArrays", "SharedArrays", "Statistics"]
-git-tree-sha1 = "74a68621bb0302ece9c1f8f702ec66d39999a0c5"
+git-tree-sha1 = "7b1d918c282f5d6d7123276d67b5730f49021eb5"
 repo-rev = "main"
 repo-url = "https://github.com/AI4DBiological-Systems/NMRSignalSimulator.jl"
 uuid = "5a515ddf-a3f2-4a7d-82cc-71ac3f3f244b"
@@ -383,9 +383,9 @@ version = "1.0.0"
 
 [[NamedDims]]
 deps = ["AbstractFFTs", "ChainRulesCore", "CovarianceEstimation", "LinearAlgebra", "Pkg", "Requires", "Statistics"]
-git-tree-sha1 = "ecd00052c682c0fa46b6b118072789526b4ca022"
+git-tree-sha1 = "467b53bf3c1f5f0612e0bc430b7afedc64652822"
 uuid = "356022a1-0364-5f58-8944-0da4b18d706f"
-version = "0.2.48"
+version = "0.2.49"
 
 [[NearestNeighbors]]
 deps = ["Distances", "StaticArrays"]

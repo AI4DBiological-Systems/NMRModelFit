@@ -200,7 +200,7 @@ function setupfitsession(SH_config_path,
     offset_ppm = 0.3,
     Δcs_max_scalar_default = 0.2,
     unique_cs_atol = 1e-6,
-    prune_combo_Δc_bar_flag = true,
+    prune_combo_Δc_flag = true,
     region_min_dist = 0.1)
 
 
@@ -243,7 +243,7 @@ function setupfitsession(SH_config_path,
         fs, SW, ν_0ppm,
         Phys;
         config_path = SH_config_path,
-        prune_combo_Δc_bar_flag = prune_combo_Δc_bar_flag)
+        prune_combo_Δc_flag = prune_combo_Δc_flag)
 
 
     ΩS_ppm = NMRModelFit.getΩSppm(As, hz2ppmfunc)
@@ -448,34 +448,6 @@ function runfitmixture(y_cost::Vector{Complex{T}}, P_cost, U_cost,
         β_xtol_rel = 1e-9,
         β_ftol_rel = 1e-9,
         β_maxtime = Inf)
-
-    # @time obj_func, minf, minx, ret,
-    # w = NMRModelFit.fitmodelBlackBoxOptim(y_cost,
-    #     U_cost,
-    #     P_cost,
-    #     As,
-    #     Bs,
-    #     fs,
-    #     SW,
-    #     Δsys_cs,
-    #     a_setp, b_setp,
-    #     shift_lb,
-    #     shift_ub,
-    #     Δcs_offset,
-    #     Δcs_offset_singlets;
-    #     N_starts = N_starts,
-    #     local_optim_algorithm = :adaptive_de_rand_1_bin,
-    #     xtol_rel = 1e-9,
-    #     maxeval = maxeval, # 2, # 50,
-    #     maxtime = Inf,
-    #     β_optim_algorithm = :GN_DIRECT_L,
-    #     w_lb_default = 1e-1,
-    #     w_ub_default = 100.0,
-    #     β_max_iters = β_max_iters, # 2, # 500,
-    #     β_xtol_rel = 1e-9,
-    #     β_ftol_rel = 1e-9,
-    #     β_maxtime = Inf)
-
 
     cost_obj_func = obj_func(minx)
 
