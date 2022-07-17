@@ -122,7 +122,7 @@ offset_ppm = 0.3
 Δcs_max_scalar_default = 0.2 # In units of ppm. interpolation border that is added to the lowest and highest resonance frequency component of the mixture being simulated.
 
 unique_cs_atol = 1e-6 # for assessing chemical equivalence.
-prune_combo_Δc_flag = true
+prune_Δc_option = 4
 
 ## for determining cost function positions
 region_min_dist = 0.1 # in ppm.
@@ -172,7 +172,7 @@ println("Timing: setupmixtureSH()")
     fs, SW, ν_0ppm,
     Phys;
     config_path = SH_config_path,
-    prune_combo_Δc_flag = prune_combo_Δc_flag)
+    prune_Δc_option = prune_Δc_option)
 
 
 ΩS_ppm = NMRModelFit.getΩSppm(As, hz2ppmfunc)

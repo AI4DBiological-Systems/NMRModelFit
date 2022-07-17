@@ -155,7 +155,7 @@ u_min, u_max, cost_inds, Phys = setupfitsession(SH_config_path,
     offset_ppm = 0.3,
     Δcs_max_scalar_default = 0.2,
     unique_cs_atol = 1e-6,
-    prune_combo_Δc_flag = true,
+    prune_Δc_option = 4,
     region_min_dist = 0.1)
 
 # new normalization.
