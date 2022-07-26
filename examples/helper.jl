@@ -256,7 +256,7 @@ function setupfitsession(SH_config_path,
 
 
     println("fitproxies!()")
-    Bs = NMRSignalSimulator.fitproxies(As, NMRSignalSimulator.SpinSysParamsType1(0.0), λ0;
+    Bs = NMRSignalSimulator.fitclproxies(As, NMRSignalSimulator.SpinSysParamsType1(0.0), λ0;
         names = molecule_names,
         config_path = surrogate_config_path,
         Δcs_max_scalar_default = Δcs_max_scalar_default,
@@ -264,7 +264,7 @@ function setupfitsession(SH_config_path,
         u_max = u_max)
 
     #
-    Bs2 = NMRSignalSimulator.fitproxies(As, NMRSignalSimulator.SpinSysParamsType2(0.0), λ0;
+    Bs2 = NMRSignalSimulator.fitclproxies(As, NMRSignalSimulator.SpinSysParamsType2(0.0), λ0;
         names = molecule_names,
         config_path = surrogate_config_path,
         Δcs_max_scalar_default = Δcs_max_scalar_default,

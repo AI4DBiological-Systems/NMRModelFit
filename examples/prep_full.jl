@@ -185,7 +185,7 @@ u_max = ppm2hzfunc(ΩS_ppm_sorted[end] + u_offset)
 
 
 println("fitproxies!()")
-Bs = NMRSignalSimulator.fitproxies(As, NMRSignalSimulator.SpinSysParamsType1(0.0), λ0;
+Bs = NMRSignalSimulator.fitclproxies(As, NMRSignalSimulator.SpinSysParamsType1(0.0), λ0;
     names = molecule_names,
     config_path = surrogate_config_path,
     Δcs_max_scalar_default = Δcs_max_scalar_default,
@@ -193,7 +193,7 @@ Bs = NMRSignalSimulator.fitproxies(As, NMRSignalSimulator.SpinSysParamsType1(0.0
     u_max = u_max)
 
 #
-Bs2 = NMRSignalSimulator.fitproxies(As, NMRSignalSimulator.SpinSysParamsType2(0.0), λ0;
+Bs2 = NMRSignalSimulator.fitclproxies(As, NMRSignalSimulator.SpinSysParamsType2(0.0), λ0;
     names = molecule_names,
     config_path = surrogate_config_path,
     Δcs_max_scalar_default = Δcs_max_scalar_default,
